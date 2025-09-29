@@ -4,7 +4,7 @@
 
 It's a hybrid framework that connects two powerful systems: Villager AI, a team of autonomous AI agents for complex strategy, and HexStrike, a massive arsenal of over 150 security tools.
 
-Think of it like this: HexStrike is the giant toolbox with everything from scanners to exploit frameworks. Villager AI is the team of expert engineers who know exactly which tool to use, how to use it, and can even build new tools when needed. They work together to handle anything you throw at them.
+Think of it like this: HexStrike is the giant toolbox with everything from scanners to exploit frameworks. Villager AI is the team of expert engineers who know exactly which tool to use, how to use it, and can even build new tools when needed. They work together to handle anything you throw at them. I personally created the 10 agents with this setup be sure to think of your own and create different ones really try this out. 
 
 I have included a GitHub Tool Discovery Agent that can find, install, and integrate new tools from GitHub on its own, making the entire system self-evolving with tuning. Currently it can use the github envirmonent as a whole. 
 
