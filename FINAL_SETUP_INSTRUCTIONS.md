@@ -1,5 +1,16 @@
 # 🚨 FINAL SETUP INSTRUCTIONS - Villager MCP Tool Loading Fix
 
+## Prerequisites
+Before starting, make sure you have:
+- Villager-AI installed (cloned from this repository)
+- HexStrike-AI installed and configured
+- Both virtual environments set up and activated
+
+**Find Your Installation Paths:**
+- Villager-AI path: Where you cloned this repository (e.g., `/home/username/Villager-AI`)
+- HexStrike-AI path: Where you installed HexStrike (e.g., `/home/username/hexstrike-ai`)
+- Replace `/path/to/your/` in the examples below with your actual paths
+
 ## The Problem
 HexStrike has 69+ tools which overwhelms Cursor's MCP loading capacity, preventing Villager tools from appearing. You can see this in the available tools list - only HexStrike tools are visible.
 
@@ -13,15 +24,15 @@ HexStrike has 69+ tools which overwhelms Cursor's MCP loading capacity, preventi
 
 ### 1. Update Your MCP Configuration
 
-Copy this to `~/.cursor/mcp.json`:
+Copy this to `~/.cursor/mcp.json` (replace the paths with your actual installation paths):
 
 ```json
 {
   "mcpServers": {
     "villager": {
-      "command": "/home/yenn/Villager-AI/villager-venv-new/bin/python3",
+      "command": "/path/to/your/Villager-AI/villager-venv-new/bin/python3",
       "args": [
-        "/home/yenn/Villager-AI/mcp/villager_http_mcp.py",
+        "/path/to/your/Villager-AI/mcp/villager_http_mcp.py",
         "--server",
         "http://127.0.0.1:37695"
       ],
@@ -30,13 +41,13 @@ Copy this to `~/.cursor/mcp.json`:
       "alwaysAllow": [],
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "/home/yenn/Villager-AI"
+        "PYTHONPATH": "/path/to/your/Villager-AI"
       }
     },
     "hexstrike-ai": {
-      "command": "/home/yenn/hexstrike-ai/hexstrike-env/bin/python3",
+      "command": "/path/to/your/hexstrike-ai/hexstrike-env/bin/python3",
       "args": [
-        "/home/yenn/hexstrike-ai/hexstrike_mcp.py",
+        "/path/to/your/hexstrike-ai/hexstrike_mcp.py",
         "--server",
         "http://localhost:8000",
         "--debug"
@@ -58,14 +69,14 @@ Copy this to `~/.cursor/mcp.json`:
 
 **Terminal 1 - HexStrike Server**:
 ```bash
-cd /home/yenn/hexstrike-ai
+cd /path/to/your/hexstrike-ai
 source hexstrike-env/bin/activate
 python hexstrike_server.py --port 8000 --debug
 ```
 
 **Terminal 2 - Villager Server**:
 ```bash
-cd /home/yenn/Villager-AI
+cd /path/to/your/Villager-AI
 source villager-venv-new/bin/activate
 python villager_server.py
 ```
