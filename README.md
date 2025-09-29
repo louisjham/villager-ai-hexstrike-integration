@@ -8,7 +8,9 @@ Think of it like this: HexStrike is the giant toolbox with everything from scann
 
 I have included a GitHub Tool Discovery Agent that can find, install, and integrate new tools from GitHub on its own, making the entire system self-evolving with tuning. Currently it can use the github envirmonent as a whole. 
 
-I first ask all to go to https://github.com/0x4m4/hexstrike-ai and follow the install steps for your chosen enviroment. Once done come back here to intergrate the hybrid setup. Personally i love to do alot of maldev research and messing with c2 infastructures so villager comes in handy for this with python code execution and full kali/Github access for all tools even your own for further exploitation i dont see a limit everything can be linked in some way so this can sure be used to enhance Hexstrike and your own workflows. i will be adding more features into the mix and really dynamically testing this. currently this is the working soloution for all operations ready to be customed. Please use this safely by no means do i want to enable malicous activity. This is for all researchers to work on and understand, i hope this truly helps alot of people and inspires others to try out similiar things, we call all contribute to the landscape in some way. 
+I first ask all to go to https://github.com/0x4m4/hexstrike-ai and follow the install steps for your chosen enviroment and get to grips with it. Once done come back here to intergrate the hybrid setup. Personally i love to do alot of maldev research and messing with c2 infastructures so villager comes in handy for this with python code execution and full kali/Github access for all tools even your own for further exploitation i dont see a limit everything can be linked in some way so this can sure be used to enhance Hexstrike and your own workflows. i will be adding more features into the mix and really dynamically testing this. currently this is the working soloution for all operations ready to be customed. Please use this safely by no means do i want to enable malicous activity. This is for all researchers to work on and understand, i hope this truly helps alot of people and inspires others to try out similiar things, we call all contribute to the landscape in some way. 
+
+latest blog on this setup: https://medium.com/p/7550dcd3089b
 
 ## How It Works: The Core Idea
 
@@ -95,6 +97,59 @@ cp .env.example .env
 
 - You can get a DeepSeek API key from their [platform console](https://platform.deepseek.com/).
 - For the GitHub Token, go to Settings → Developer settings → Personal access tokens. It needs `repo`, `workflow`, and `gist` scopes.
+
+### 4. Configure MCP Integration
+
+Add this configuration to your `~/.cursor/mcp.json` file to enable both HexStrike and Villager AI in Cursor:
+
+```json
+{
+  "mcpServers": {
+    "hexstrike-ai": {
+      "command": "/path/to/your/hexstrike-venv/bin/python3",
+      "args": [
+        "/path/to/your/hexstrike-ai/hexstrike_mcp.py",
+        "--server",
+        "http://localhost:8888",
+        "--debug"
+      ],
+      "description": "HexStrike AI v6.0 - Advanced Cybersecurity Automation Platform with 69+ Security Tools",
+      "timeout": 300,
+      "alwaysAllow": []
+    },
+    "villager": {
+      "command": "/path/to/your/Villager-AI/villager-venv-new/bin/python",
+      "args": [
+        "/path/to/your/Villager-AI/mcp/villager_http_mcp.py",
+        "--server",
+        "http://127.0.0.1:37695"
+      ],
+      "description": "Villager AI Framework - Autonomous Penetration Testing with Agent Management",
+      "timeout": 300,
+      "alwaysAllow": [],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "/path/to/your/Villager-AI"
+      }
+    }
+  }
+}
+```
+
+**Important**: Update the paths to match your actual installation directories.
+
+### 5. How MCP Integration Works
+
+The MCP (Model Context Protocol) configuration allows Cursor to communicate with both systems:
+
+- **HexStrike AI** runs on `localhost:8888` and provides direct access to 150+ security tools
+- **Villager AI** runs on `127.0.0.1:37695` and provides autonomous agent management
+- **Cursor AI** acts as the bridge, intelligently choosing which system to use based on your requests
+
+Once configured, you can use both systems seamlessly in Cursor chat:
+- Direct HexStrike commands: `mcp_hexstrike-ai_nmap_scan(...)`
+- Villager agent creation: `create_agent(...)`
+- The AI automatically decides which system to use based on task complexity
 
 ### 2. Create Your First Agent
 
