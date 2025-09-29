@@ -98,7 +98,7 @@ cp .env.example .env
 
 ### 2. Create Your First Agent
 
-In your chat interface (like Cursor), run this to create an agent.
+In your chat interface (like Cursor), run a prompt asking it to create an agent using the villager tool. it will then run:
 
 ```python
 create_agent(
@@ -109,7 +109,7 @@ create_agent(
 
 ### 3. Check on It
 
-You can see what your agents are up to at any time.
+You can see what your agents are up to at any time. just ask the model to check. there is a tool built in for this.
 
 ```python
 # See a list of all active agents and their status
