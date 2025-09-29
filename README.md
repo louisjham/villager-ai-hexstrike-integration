@@ -1,4 +1,4 @@
-# 🛡️ Villager AI + HexStrike Integration
+# Villager AI + HexStrike Integration
 
 ![Villager AI + HexStrike Integration](1000049190.png)
 
@@ -10,7 +10,7 @@ I have included a GitHub Tool Discovery Agent that can find, install, and integr
 
 I first ask all to go to https://github.com/0x4m4/hexstrike-ai and follow the install steps for your chosen enviroment. Once done come back here to intergrate the hybrid setup. Personally i love to do alot of maldev research and messing with c2 infastructures so villager comes in handy for this with python code execution and full kali/Github access for all tools even your own for further exploitation i dont see a limit everything can be linked in some way so this can sure be used to enhance Hexstrike and your own workflows. i will be adding more features into the mix and really dynamically testing this. currently this is the working soloution for all operations ready to be customed. Please use this safely by no means do i want to enable malicous activity. This is for all researchers to work on and understand, i hope this truly helps alot of people and inspires others to try out similiar things, we call all contribute to the landscape in some way. 
 
-## 🏗️ How It Works: The Core Idea
+## How It Works: The Core Idea
 
 The system is built on two main components that you can access through a single chat interface such as cursor, vscode even local setups. 
 
