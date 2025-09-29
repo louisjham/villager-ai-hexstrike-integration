@@ -1,524 +1,219 @@
-# 🛡️ **Villager AI + HexStrike Integration - Complete Guide**
+# 🛡️ Villager AI + HexStrike Integration
 
-## 🎯 **What This Is**
+![Villager AI + HexStrike Integration](1000049190.png)
 
-This is a **comprehensive AI-powered security framework** that combines:
-- **Villager AI**: Autonomous penetration testing with 10 specialized AI agents
-- **HexStrike AI**: 150+ security tools arsenal with AI-assisted execution
-- **GitHub Integration**: Tool discovery and repository management
-- **MCP Bridge**: Seamless chat-based access to everything
+It's a hybrid framework that connects two powerful systems: Villager AI, a team of autonomous AI agents for complex strategy, and HexStrike, a massive arsenal of over 150 security tools.
 
-**Result**: A self-evolving security platform that can discover, install, and use new tools from GitHub while performing autonomous security operations.
+Think of it like this: HexStrike is the giant toolbox with everything from scanners to exploit frameworks. Villager AI is the team of expert engineers who know exactly which tool to use, how to use it, and can even build new tools when needed. They work together to handle anything you throw at them.
 
----
+I have included a GitHub Tool Discovery Agent that can find, install, and integrate new tools from GitHub on its own, making the entire system self-evolving with tuning. Currently it can use the github envirmonent as a whole. 
 
-## 🏗️ **System Architecture**
+I first ask all to go to https://github.com/0x4m4/hexstrike-ai and follow the install steps for your chosen enviroment. Once done come back here to intergrate the hybrid setup. Personally i love to do alot of maldev research and messing with c2 infastructures so villager comes in handy for this with python code execution and full kali/Github access for all tools even your own for further exploitation i dont see a limit everything can be linked in some way so this can sure be used to enhance Hexstrike and your own workflows. i will be adding more features into the mix and really dynamically testing this. currently this is the working soloution for all operations ready to be customed. Please use this safely by no means do i want to enable malicous activity. This is for all researchers to work on and understand, i hope this truly helps alot of people and inspires others to try out similiar things, we call all contribute to the landscape in some way. 
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   HexStrike AI  │    │   Villager AI   │    │   GitHub API    │
-│   150+ Tools    │◄──►│   10 Agents     │◄──►│   Tool Discovery│
-│   Port: 8000    │    │   Port: 37695   │    │   Repository    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         ▲                       ▲                       ▲
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 │
-                    ┌─────────────────┐
-                    │   MCP Bridge    │
-                    │   (Cursor AI)   │
-                    └─────────────────┘
-```
+## 🏗️ How It Works: The Core Idea
 
----
+The system is built on two main components that you can access through a single chat interface such as cursor, vscode even local setups. 
 
-## 🤖 **The 10 Specialized Security Agents**
+### 🧰 HexStrike: The Tool Arsenal
 
-### **1. Reconnaissance_Agent**
-**Purpose**: Information gathering and target discovery
-**Tools**: Nmap, Amass, Subfinder, Masscan, Rustscan
-**What it does**:
-- Subdomain enumeration
-- Port scanning and service detection
-- OS fingerprinting
-- Network range discovery
-- IP address collection
+HexStrike is your direct-access toolkit. It's packed with 150+ essential security tools ready to go.
 
-### **2. Vulnerability_Assessment_Agent**
-**Purpose**: Comprehensive vulnerability scanning
-**Tools**: Nuclei, Trivy, Checkov, custom scanners
-**What it does**:
-- Known vulnerability scanning
-- Container security assessment
-- Infrastructure as Code security
-- CVE database cross-referencing
-- Vulnerability prioritization
+- **Network Scanning**: Nmap, Masscan, Rustscan
+- **Web App Testing**: Nuclei, SQLMap, Burp Suite  
+- **Exploitation**: Metasploit, Hydra, Hashcat
+- **Forensics**: Volatility, Ghidra, Radare2
+- **Cloud & Containers**: Prowler, Trivy, Kube-hunter
 
-### **3. Web_Application_Testing_Agent**
-**Purpose**: Web application security testing
-**Tools**: OWASP ZAP, Burp Suite, SQLMap, Nikto, Gobuster
-**What it does**:
-- Comprehensive web app scanning
-- SQL injection testing
-- XSS and CSRF testing
-- Directory enumeration
-- Server vulnerability checks
-
-### **4. Exploitation_Agent**
-**Purpose**: Vulnerability exploitation and initial access
-**Tools**: Metasploit, SQLMap, Hydra, custom exploits
-**What it does**:
-- Exploit execution
-- SQL injection exploitation
-- Brute force attacks
-- Access establishment
-- Exploit documentation
-
-### **5. Post_Exploitation_Agent**
-**Purpose**: Lateral movement and persistence
-**Tools**: Mimikatz, BloodHound, lateral movement tools
-**What it does**:
-- Credential extraction
-- Active Directory analysis
-- Lateral movement techniques
-- Persistence establishment
-- Privilege escalation
-
-### **6. Forensics_Agent**
-**Purpose**: Attack analysis and evidence collection
-**Tools**: Volatility, Binwalk, Radare2, reverse engineering
-**What it does**:
-- Memory forensics analysis
-- Firmware and file analysis
-- Reverse engineering
-- System artifact analysis
-- Evidence collection
-
-### **7. Monitoring_Agent**
-**Purpose**: Continuous security monitoring
-**Tools**: Custom monitoring scripts, Nuclei, network monitoring
-**What it does**:
-- Continuous network monitoring
-- Ongoing vulnerability scanning
-- CVE and threat monitoring
-- Suspicious activity alerts
-- System change tracking
-
-### **8. Reporting_Agent**
-**Purpose**: Comprehensive report generation
-**Tools**: Custom reporting tools, GitHub integration, visualization
-**What it does**:
-- Data aggregation from all agents
-- Executive summary generation
-- Technical report creation
-- GitHub report storage
-- Data visualization
-
-### **9. Workflow_Coordinator_Agent**
-**Purpose**: Master orchestration and workflow management
-**Tools**: GitHub integration, workflow management tools
-**What it does**:
-- Multi-stage operation coordination
-- Agent execution sequencing
-- Shared state management
-- Data flow coordination
-- Error handling and retry logic
-
-### **10. GitHub_Tool_Discovery_Agent**
-**Purpose**: Discover, install, and integrate new security tools
-**Tools**: GitHub API, tool discovery system
-**What it does**:
-- Search GitHub for security tools
-- Analyze tool types and installation methods
-- Install tools automatically
-- Test installed tools
-- Integrate new tools into workflows
-
----
-
-## 🚀 **How to Use the System**
-
-### **Step 1: Start the Servers**
+Use HexStrike when you know exactly what you want to do. It's for fast, specific commands where you want total control.
 
 ```bash
-# Start Villager AI (Port 37695)
-cd /home/yenn/Villager-AI
-./start_villager.sh
-
-# Start HexStrike AI (Port 8000) - if not already running
-cd /home/yenn/hexstrike-ai
-./start_hexstrike.sh
+# Example: You need a quick port scan.
+mcp_hexstrike-ai_nmap_scan(target="192.168.1.1", ports="80,443")
 ```
 
-### **Step 2: Create Specialized Agents**
+### 🧠 Villager AI: The Autonomous Agents
+
+Villager AI is where the magic happens. It's a team of 10 specialized AI agents that can plan, strategize, and execute complex, multi-step operations.
+
+- **DeepSeek AI Brain**: Each agent thinks and reasons through problems
+- **Task Decomposition**: They break down big goals (like "pwn this box") into smaller, manageable steps
+- **Adaptive Strategy**: If one tool fails, they'll try another. They learn as they go
+- **Tool Intelligence**: They automatically pick the best tool for the job from the HexStrike arsenal or even from their own capabilities
+
+Use Villager AI when you have a goal, not a command. It's perfect for complex operations that require stealth, adaptation, and long-term persistence.
 
 ```python
-# Create a reconnaissance agent
-mcp_hexstrike-ai_execute_python_script(script="""
-import subprocess
-import json
-
-# Create reconnaissance agent
-agent = {
-    "name": "Recon_Agent",
-    "task": "Perform comprehensive reconnaissance on target.com. Use Nmap for port scanning, Amass for subdomain enumeration, and gather all available information about the target."
-}
-
-result = subprocess.run([
-    'curl', '-X', 'POST', 'http://127.0.0.1:37695/api/agents/create',
-    '-H', 'Content-Type: application/json',
-    '-d', json.dumps(agent)
-], capture_output=True, text=True)
-
-print("Agent created:", result.stdout)
-""")
+# Example: You want to perform a full pentest.
+create_agent(
+    name="Pentest_Agent",
+    task="Perform a comprehensive penetration test on target.com. Start with recon, find vulnerabilities, attempt exploitation, and generate a report."
+)
 ```
 
-### **Step 3: Monitor Agent Progress**
+### 🎯 When to Use Which System
 
-```python
-# Check all agents
-mcp_hexstrike-ai_execute_python_script(script="""
-import subprocess
-import json
+**Use HexStrike Direct Commands When:**
+- You need **immediate, specific tool execution**
+- You want **direct control** over tool parameters
+- You're doing **quick reconnaissance** or **single-point testing**
+- You need **real-time results** without agent overhead
 
-result = subprocess.run(['curl', '-s', 'http://127.0.0.1:37695/api/agents'], capture_output=True, text=True)
-agents = json.loads(result.stdout)
+**Use Villager Agents When:**
+- You need **complex, multi-stage operations**
+- You want **autonomous decision-making** and adaptation
+- You're doing **long-term operations** or **persistent access**
+- You want **evasion and stealth** capabilities
 
-print(f"Total agents: {len(agents['agents'])}")
-for agent in agents['agents']:
-    print(f"• {agent['name']} - {agent['status']} ({agent['progress']}%)")
-""")
-```
+**How the AI Assistant (Cursor) Decides:**
+- **Simple tasks** → Direct HexStrike tools for speed
+- **Complex operations** → Villager agents for intelligence
+- **Tool overlap** → Villager agents choose optimal tools based on context (e.g., using HexStrike findings to inform Villager decisions)
+- **Your explicit instructions** → Always followed (e.g., "use Villager for this" or "use HexStrike directly")
+- **Context analysis** → AI determines if task needs autonomous reasoning or direct execution
 
-### **Step 4: Use GitHub Tool Discovery**
+## 🚀 Quick Start
 
-```python
-# Discover and install new tools
-mcp_hexstrike-ai_execute_python_script(script="""
-import subprocess
-import json
+Get up and running in a few minutes.
 
-# Create tool discovery agent
-agent = {
-    "name": "Tool_Discovery_Agent",
-    "task": "Search GitHub for Python-based network scanning tools, analyze the top 3 results, and install the best one. Test the installed tool to ensure it works correctly."
-}
+### 1. Setup
 
-result = subprocess.run([
-    'curl', '-X', 'POST', 'http://127.0.0.1:37695/api/agents/create',
-    '-H', 'Content-Type: application/json',
-    '-d', json.dumps(agent)
-], capture_output=True, text=True)
-
-print("Tool discovery agent created:", result.stdout)
-""")
-```
-
----
-
-## 🔄 **Workflow Examples**
-
-### **Example 1: Complete Penetration Test**
-
-```python
-# Create a coordinated penetration test
-mcp_hexstrike-ai_execute_python_script(script="""
-import subprocess
-import json
-
-# Create workflow coordinator
-coordinator = {
-    "name": "Pentest_Coordinator",
-    "task": "Coordinate a complete penetration test of target.com. Execute the following workflow: 1) Reconnaissance to gather information, 2) Vulnerability assessment to find weaknesses, 3) Exploitation attempts on found vulnerabilities, 4) Post-exploitation if access is gained, 5) Generate comprehensive report. Coordinate with other agents and ensure proper data flow between stages."
-}
-
-result = subprocess.run([
-    'curl', '-X', 'POST', 'http://127.0.0.1:37695/api/agents/create',
-    '-H', 'Content-Type: application/json',
-    '-d', json.dumps(coordinator)
-], capture_output=True, text=True)
-
-print("Penetration test coordinator created:", result.stdout)
-""")
-```
-
-### **Example 2: Continuous Security Monitoring**
-
-```python
-# Create monitoring system
-mcp_hexstrike-ai_execute_python_script(script="""
-import subprocess
-import json
-
-# Create monitoring agent
-monitor = {
-    "name": "Security_Monitor",
-    "task": "Set up continuous security monitoring for the network. Monitor for new vulnerabilities, scan for changes, and alert on suspicious activities. Coordinate with vulnerability assessment agents when issues are found."
-}
-
-result = subprocess.run([
-    'curl', '-X', 'POST', 'http://127.0.0.1:37695/api/agents/create',
-    '-H', 'Content-Type: application/json',
-    '-d', json.dumps(monitor)
-], capture_output=True, text=True)
-
-print("Security monitor created:", result.stdout)
-""")
-```
-
-### **Example 3: GitHub Tool Discovery and Integration**
-
-```python
-# Discover and integrate new tools
-mcp_hexstrike-ai_execute_python_script(script="""
-import subprocess
-import json
-
-# Create tool discovery agent
-discovery = {
-    "name": "Tool_Discovery_Agent",
-    "task": "Search GitHub for the latest security tools in these categories: 1) Web application security testing, 2) Network scanning, 3) Vulnerability assessment. For each category, find the top 2 tools, analyze their capabilities, install them, and integrate them into the appropriate agent workflows."
-}
-
-result = subprocess.run([
-    'curl', '-X', 'POST', 'http://127.0.0.1:37695/api/agents/create',
-    '-H', 'Content-Type: application/json',
-    '-d', json.dumps(discovery)
-], capture_output=True, text=True)
-
-print("Tool discovery agent created:", result.stdout)
-""")
-```
-
----
-
-## 🛠️ **Available Tools and Capabilities**
-
-### **HexStrike Tools (150+)**
-- **Network Scanning**: Nmap, Masscan, Rustscan, Gobuster, Dirb
-- **Web Application Testing**: OWASP ZAP, Burp Suite, Nikto, SQLMap, XSSer
-- **Vulnerability Scanning**: Nuclei, Trivy, Checkov, Clair
-- **Exploitation**: Metasploit, Hydra, John the Ripper, Hashcat
-- **Forensics**: Volatility, Binwalk, GDB, Radare2, Ghidra
-- **Cloud Security**: Prowler, Scout Suite, CloudMapper
-- **Container Security**: Docker Bench, Falco, Kube-hunter
-- **And 100+ more specialized tools**
-
-### **GitHub Integration**
-- **Repository Management**: Create, fork, delete repositories
-- **Issue Tracking**: Create, update, comment on issues
-- **Pull Request Management**: Create, review, merge PRs
-- **Code Analysis**: File operations, branch management
-- **Tool Discovery**: Search, analyze, install security tools
-- **Collaboration**: Share reports and findings
-
-### **Villager Agent Capabilities**
-- **Autonomous Task Planning**: Break complex tasks into subtasks
-- **Tool Selection**: Intelligently choose appropriate tools
-- **Multi-Agent Coordination**: Work together on complex operations
-- **Error Recovery**: Retry failed operations with different approaches
-- **Progress Tracking**: Real-time status updates
-- **Self-Evolution**: Discover and integrate new tools
-
----
-
-## 🔧 **Configuration and Setup**
-
-### **Environment Variables**
 ```bash
-# Required
-DEEPSEEK_API_KEY=your-deepseek-api-key-here
-GITHUB_TOKEN=your-github-token-here
+# Clone the repo
+git clone https://github.com/Yenn503/villager-ai-hexstrike-integration.git
+cd villager-ai-hexstrike-integration
 
-# Optional
-VILLAGER_HOST=0.0.0.0
-VILLAGER_PORT=37695
-ALLOW_SHELL=1
-ALLOW_APT=1
-ALLOW_WRITE=1
-ALLOW_BUILD=1
-```
+# Copy the example .env file
+cp .env.example .env
 
-### **GitHub Token Setup**
-1. Go to GitHub: Settings → Developer settings → Personal access tokens
-2. Generate new token with these scopes:
-   - `repo` (Full control of private repositories)
-   - `workflow` (Access workflow runs)
-   - `gist` (Create gists)
-3. Set environment variable: `export GITHUB_TOKEN="your-token"`
+# Now, edit .env with your API keys
+# DEEPSEEK_API_KEY=your-key-here
+# GITHUB_TOKEN=your-personal-access-token-here
 
-### **MCP Configuration**
-The system is already configured in your Cursor MCP settings. No additional setup needed.
-
----
-
-## 📊 **Monitoring and Management**
-
-### **Check System Status**
-```python
-# Check Villager server status
-mcp_hexstrike-ai_execute_python_script(script="""
-import subprocess
-import json
-
-result = subprocess.run(['curl', '-s', 'http://127.0.0.1:37695/api/status'], capture_output=True, text=True)
-status = json.loads(result.stdout)
-print("Villager Status:", status)
-""")
-```
-
-### **List All Agents**
-```python
-# List all active agents
-mcp_hexstrike-ai_execute_python_script(script="""
-import subprocess
-import json
-
-result = subprocess.run(['curl', '-s', 'http://127.0.0.1:37695/api/agents'], capture_output=True, text=True)
-agents = json.loads(result.stdout)
-
-print(f"Active Agents: {len(agents['agents'])}")
-for agent in agents['agents']:
-    print(f"• {agent['name']} - {agent['status']} ({agent['progress']}%)")
-""")
-```
-
-### **Check Agent Details**
-```python
-# Get specific agent details
-mcp_hexstrike-ai_execute_python_script(script="""
-import subprocess
-import json
-
-# Replace with actual agent ID
-agent_id = "your-agent-id-here"
-result = subprocess.run(['curl', '-s', f'http://127.0.0.1:37695/api/agents/{agent_id}'], capture_output=True, text=True)
-agent = json.loads(result.stdout)
-print("Agent Details:", agent)
-""")
-```
-
----
-
-## 🎯 **Best Practices**
-
-### **Agent Creation**
-- **Be Specific**: Give agents clear, detailed tasks
-- **Use Specialized Agents**: Choose the right agent type for your task
-- **Coordinate Workflows**: Use the Workflow Coordinator for complex operations
-- **Monitor Progress**: Check agent status regularly
-
-### **Tool Discovery**
-- **Search Strategically**: Use specific keywords for tool discovery
-- **Test Thoroughly**: Always test new tools before integration
-- **Document Usage**: Keep track of tool capabilities and usage
-- **Update Regularly**: Keep tools updated for latest features
-
-### **Security Operations**
-- **Start with Reconnaissance**: Always gather information first
-- **Follow the Workflow**: Use the established penetration testing workflow
-- **Document Everything**: Generate comprehensive reports
-- **Coordinate Agents**: Let agents work together on complex tasks
-
-### **GitHub Integration**
-- **Use Repositories**: Store reports and findings in GitHub
-- **Collaborate**: Share findings with team members
-- **Version Control**: Track changes and improvements
-- **Automate**: Use GitHub Actions for automated workflows
-
----
-
-## 🚨 **Troubleshooting**
-
-### **Common Issues**
-
-**Agents Not Starting**
-```bash
-# Check server status
-curl http://127.0.0.1:37695/api/status
-
-# Restart Villager server
-cd /home/yenn/Villager-AI
+# Start everything up
 ./start_villager.sh
 ```
 
-**GitHub Integration Not Working**
-```bash
-# Check GitHub token
-echo $GITHUB_TOKEN
+- You can get a DeepSeek API key from their [platform console](https://platform.deepseek.com/).
+- For the GitHub Token, go to Settings → Developer settings → Personal access tokens. It needs `repo`, `workflow`, and `gist` scopes.
 
-# Test GitHub connection
-curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user
+### 2. Create Your First Agent
+
+In your chat interface (like Cursor), run this to create an agent.
+
+```python
+create_agent(
+    name="Recon_Agent",
+    task="Perform reconnaissance on target.com using Nmap and subdomain enumeration."
+)
 ```
 
-**Tools Not Found**
-```bash
-# Check HexStrike server
-curl http://127.0.0.1:8000/status
+### 3. Check on It
 
-# Restart HexStrike server
-cd /home/yenn/hexstrike-ai
-./start_hexstrike.sh
+You can see what your agents are up to at any time.
+
+```python
+# See a list of all active agents and their status
+list_agents()
 ```
 
-### **Performance Optimization**
-- **Limit Concurrent Agents**: Don't run too many agents simultaneously
-- **Monitor Resource Usage**: Check CPU and memory usage
-- **Clean Up**: Remove completed agents regularly
-- **Update Tools**: Keep all tools updated
+## 🤖 Meet the 10 Autonomous Agents
+
+Villager AI comes with ten pre-built agents, each with a specific job.
+
+- **Reconnaissance_Agent**: Gathers intel. It finds subdomains, scans ports, and maps out the target network.
+- **Vulnerability_Assessment_Agent**: Scans for weaknesses using tools like Nuclei and Trivy against known CVEs.
+- **Web_Application_Testing_Agent**: Focuses on web apps. It hunts for SQL injection, XSS, and other OWASP Top 10 vulnerabilities.
+- **Exploitation_Agent**: Tries to gain access by using exploits found by the other agents. It uses Metasploit, SQLMap, and Hydra.
+- **Post_Exploitation_Agent**: Once inside, this agent works on lateral movement, privilege escalation, and setting up persistence.
+- **Forensics_Agent**: Analyzes memory dumps, reverses binaries, and collects evidence of an attack.
+- **Monitoring_Agent**: Keeps an eye on things long-term. It can watch for new vulnerabilities or suspicious activity and alert you.
+- **Reporting_Agent**: Collects all the findings from the other agents and generates a clean, comprehensive report.
+- **Workflow_Coordinator_Agent**: The project manager. It coordinates multi-stage attacks, making sure all the other agents work together smoothly.
+- **GitHub_Tool_Discovery_Agent**: The most unique agent. It actively searches GitHub for new security tools, analyzes them, installs them, and integrates them into the framework.
+
+## 💡 Practical Examples
+
+Here's how the AI decides whether to use a direct HexStrike command or a Villager agent.
+
+### Scenario 1: Simple Port Scan
+
+- **You say**: "Scan port 80 on 192.168.1.1"
+- **AI Decision**: This is a simple, direct command. Use HexStrike.
+- **Action**: `mcp_hexstrike-ai_nmap_scan(target="192.168.1.1", ports="80")`
+
+### Scenario 2: Full Penetration Test
+
+- **You say**: "Perform a full penetration test on target.com"
+- **AI Decision**: This is a complex goal, not a single command. It requires planning and multiple steps. Use a Villager agent.
+- **Action**: `create_agent(name="Pentest_Coordinator", task="Coordinate a full pentest of target.com...")`
+
+### Scenario 3: Discovering New Tools
+
+- **You say**: "Find a new Python-based network scanner on GitHub and install it."
+- **AI Decision**: This is a job for the specialized discovery agent.
+- **Action**: `create_agent(name="Tool_Discovery_Agent", task="Search GitHub for Python network scanners, analyze the best one, install it, and test it.")`
+
+## 🛠️ Command Reference
+
+Here's a quick look at some of the available commands you can use.
+
+<details>
+<summary><strong>Click to expand the full command list</strong></summary>
+
+### Villager AI Commands
+
+```python
+# Agent Management
+create_agent(name="Agent_Name", task="Your detailed goal here")
+list_agents()
+
+# Direct Execution (for advanced control)
+execute_shell(cmd="nmap -sS target.com", timeout=120)
+execute_python(code="print('Hello from an agent')")
+```
+
+### HexStrike AI Commands (150+ available)
+
+```python
+# Network Scanning
+mcp_hexstrike-ai_nmap_scan(target="192.168.1.1", scan_type="-sS")
+mcp_hexstrike-ai_rustscan_fast_scan(target="target.com", ports="22,80,443")
+
+# Web App & Vuln Scanning
+mcp_hexstrike-ai_nuclei_scan(target="https://target.com", severity="high")
+mcp_hexstrike-ai_sqlmap_scan(url="https://target.com/login?id=1")
+mcp_hexstrike-ai_trivy_scan(scan_type="image", target="nginx:latest")
+
+# Exploitation & Cracking
+mcp_hexstrike-ai_hydra_attack(target="192.168.1.1", service="ssh", username="admin")
+mcp_hexstrike-ai_hashcat_crack(hash_file="hashes.txt", hash_type="1000")
+
+# Forensics
+mcp_hexstrike-ai_volatility_analyze(memory_file="memory.dmp", plugin="pslist")
+```
+
+### GitHub Integration
+
+The framework has built-in functions for managing GitHub repos, issues, and pull requests, which are used by the agents to store reports and discover tools.
+
+</details>
+
+## 🚨 Troubleshooting
+
+If you run into trouble, here are a few things to check.
+
+### Agents not starting?
+- Make sure the Villager server is running. You can check its status with `curl http://127.0.0.1:37695/api/status`.
+- If it's down, restart it with `./start_villager.sh`.
+
+### GitHub features not working?
+- Double-check that your `GITHUB_TOKEN` is correct and hasn't expired.
+- Test it with `curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user`. You should see your user info.
+
+### HexStrike tools failing?
+- Make sure the HexStrike server is running at `http://127.0.0.1:8000`.
+- Restart it if necessary.
 
 ---
 
-## 🎉 **What Makes This Special**
-
-### **Self-Evolving Framework**
-- **Tool Discovery**: Automatically find and install new security tools
-- **Continuous Learning**: Agents learn from their experiences
-- **Adaptive Workflows**: Workflows adapt based on results
-- **Community Integration**: Leverage the entire GitHub security community
-
-### **Comprehensive Coverage**
-- **Full Security Lifecycle**: From reconnaissance to reporting
-- **Multiple Attack Vectors**: Web, network, cloud, container security
-- **Automated Coordination**: Agents work together seamlessly
-- **Real-time Monitoring**: Continuous security assessment
-
-### **Easy to Use**
-- **Chat-Based Interface**: No complex command-line operations
-- **Intelligent Agents**: Just describe what you want, agents figure out how
-- **Progress Tracking**: Real-time status updates
-- **Comprehensive Reports**: Detailed findings and recommendations
-
----
-
-## 🚀 **Getting Started Right Now**
-
-1. **Start the servers** (if not already running)
-2. **Create your first agent**:
-   ```python
-   mcp_hexstrike-ai_execute_python_script(script="""
-   import subprocess
-   import json
-   
-   agent = {
-       "name": "My_First_Agent",
-       "task": "Analyze the current system and provide a security assessment. Check running processes, network connections, and system vulnerabilities."
-   }
-   
-   result = subprocess.run([
-       'curl', '-X', 'POST', 'http://127.0.0.1:37695/api/agents/create',
-       '-H', 'Content-Type: application/json',
-       '-d', json.dumps(agent)
-   ], capture_output=True, text=True)
-   
-   print("Agent created:", result.stdout)
-   """)
-   ```
-3. **Monitor the agent's progress**
-4. **Explore the results**
-5. **Create more specialized agents as needed**
-
----
-
-**This is the most comprehensive and advanced AI-powered security framework available. You now have access to autonomous agents that can discover new tools, coordinate complex security operations, and provide detailed analysis - all through simple chat commands. Welcome to the future of cybersecurity!** 🛡️🤖
+**Welcome to the future of automated security!** 🚀
