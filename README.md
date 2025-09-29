@@ -2,11 +2,11 @@
 
 ![Villager AI + HexStrike Integration](1000049190.png)
 
-It's a hybrid framework that connects two powerful systems: Villager AI, a team of autonomous AI agents for complex strategy, and HexStrike, a massive arsenal of over 150 security tools.
+It's a hybrid framework that connects two powerful systems: Villager AI, a flexible agent framework for creating custom autonomous agents, and HexStrike, a massive arsenal of over 150 security tools.
 
-Think of it like this: HexStrike is the giant toolbox with everything from scanners to exploit frameworks. Villager AI is the team of expert engineers who know exactly which tool to use, how to use it, and can even build new tools when needed. They work together to handle anything you throw at them. I personally created the 10 agents with this setup be sure to think of your own and create different ones really try this out. 
+Think of it like this: HexStrike is the giant toolbox with everything from scanners to exploit frameworks. Villager AI is the framework that lets you create custom expert engineers who know exactly which tool to use, how to use it, and can even build new tools when needed. They work together to handle anything you throw at them. 
 
-I have included a GitHub Tool Discovery Agent that can find, install, and integrate new tools from GitHub on its own, making the entire system self-evolving with tuning. Currently it can use the github envirmonent as a whole. 
+**Key Point**: Villager AI doesn't come with predefined agents. Instead, it's a framework that lets you create custom agents for any security task you need. The only built-in specialized component is the GitHub Tool Discovery system, which can find, install, and integrate new tools from GitHub automatically, making the entire system self-evolving. 
 
 I first ask all to go to https://github.com/0x4m4/hexstrike-ai and follow the install steps for your chosen enviroment and get to grips with it. Once done come back here to intergrate the hybrid setup. Personally i love to do alot of maldev research and messing with c2 infastructures so villager comes in handy for this with python code execution and full kali/Github access for all tools even your own for further exploitation i dont see a limit everything can be linked in some way so this can sure be used to enhance Hexstrike and your own workflows. i will be adding more features into the mix and really dynamically testing this. currently this is the working soloution for all operations ready to be customed. Please use this safely by no means do i want to enable malicous activity. This is for all researchers to work on and understand, i hope this truly helps alot of people and inspires others to try out similiar things, we call all contribute to the landscape in some way. 
 
@@ -33,22 +33,23 @@ Use HexStrike when you know exactly what you want to do. It's for fast, specific
 mcp_hexstrike-ai_nmap_scan(target="192.168.1.1", ports="80,443")
 ```
 
-### 🧠 Villager AI: The Autonomous Agents
+### 🧠 Villager AI: The Agent Framework
 
-Villager AI is where the magic happens. It's a team of 10 specialized AI agents that can plan, strategize, and execute complex, multi-step operations.
+Villager AI is where the magic happens. It's a flexible framework that lets you create custom autonomous AI agents for any security task you need.
 
-- **DeepSeek AI Brain**: Each agent thinks and reasons through problems
+- **DeepSeek AI Brain**: Each agent you create thinks and reasons through problems
 - **Task Decomposition**: They break down big goals (like "pwn this box") into smaller, manageable steps
 - **Adaptive Strategy**: If one tool fails, they'll try another. They learn as they go
 - **Tool Intelligence**: They automatically pick the best tool for the job from the HexStrike arsenal or even from their own capabilities
+- **Custom Agent Creation**: You define the agent's name and task - no predefined types to limit you
 
 Use Villager AI when you have a goal, not a command. It's perfect for complex operations that require stealth, adaptation, and long-term persistence.
 
 ```python
-# Example: You want to perform a full pentest.
+# Example: You want to create a custom pentest agent.
 create_agent(
-    name="Pentest_Agent",
-    task="Perform a comprehensive penetration test on target.com. Start with recon, find vulnerabilities, attempt exploitation, and generate a report."
+    name="Custom_Pentest_Agent",
+    task="Perform a comprehensive penetration test on target.com. Start with reconnaissance (subdomain enumeration, port scanning), then vulnerability assessment (Nuclei, SQLMap), followed by exploitation attempts, and finally generate a detailed report with findings and recommendations."
 )
 ```
 
@@ -105,18 +106,6 @@ Add this configuration to your `~/.cursor/mcp.json` file to enable both HexStrik
 ```json
 {
   "mcpServers": {
-    "hexstrike-ai": {
-      "command": "/path/to/your/hexstrike-venv/bin/python3",
-      "args": [
-        "/path/to/your/hexstrike-ai/hexstrike_mcp.py",
-        "--server",
-        "http://localhost:8888",
-        "--debug"
-      ],
-      "description": "HexStrike AI v6.0 - Advanced Cybersecurity Automation Platform with 69+ Security Tools",
-      "timeout": 300,
-      "alwaysAllow": []
-    },
     "villager": {
       "command": "/path/to/your/Villager-AI/villager-venv-new/bin/python",
       "args": [
@@ -131,6 +120,18 @@ Add this configuration to your `~/.cursor/mcp.json` file to enable both HexStrik
         "PYTHONUNBUFFERED": "1",
         "PYTHONPATH": "/path/to/your/Villager-AI"
       }
+    },
+    "hexstrike-ai": {
+      "command": "/path/to/your/hexstrike-venv/bin/python3",
+      "args": [
+        "/path/to/your/hexstrike-ai/hexstrike_mcp.py",
+        "--server",
+        "http://localhost:8888",
+        "--debug"
+      ],
+      "description": "HexStrike AI v6.0 - Advanced Cybersecurity Automation Platform with 69+ Security Tools",
+      "timeout": 300,
+      "alwaysAllow": []
     }
   }
 }
@@ -171,20 +172,35 @@ You can see what your agents are up to at any time. just ask the model to check.
 list_agents()
 ```
 
-## 🤖 Meet the 10 Autonomous Agents
+## 🤖 Agent Framework Architecture
 
-Villager AI comes with ten pre-built agents, each with a specific job.
+Villager AI is a **flexible agent framework** that allows you to create custom autonomous agents for any security task. Unlike traditional tools with predefined agent types, Villager gives you the freedom to design agents tailored to your specific needs.
 
-- **Reconnaissance_Agent**: Gathers intel. It finds subdomains, scans ports, and maps out the target network.
-- **Vulnerability_Assessment_Agent**: Scans for weaknesses using tools like Nuclei and Trivy against known CVEs.
-- **Web_Application_Testing_Agent**: Focuses on web apps. It hunts for SQL injection, XSS, and other OWASP Top 10 vulnerabilities.
-- **Exploitation_Agent**: Tries to gain access by using exploits found by the other agents. It uses Metasploit, SQLMap, and Hydra.
-- **Post_Exploitation_Agent**: Once inside, this agent works on lateral movement, privilege escalation, and setting up persistence.
-- **Forensics_Agent**: Analyzes memory dumps, reverses binaries, and collects evidence of an attack.
-- **Monitoring_Agent**: Keeps an eye on things long-term. It can watch for new vulnerabilities or suspicious activity and alert you.
-- **Reporting_Agent**: Collects all the findings from the other agents and generates a clean, comprehensive report.
-- **Workflow_Coordinator_Agent**: The project manager. It coordinates multi-stage attacks, making sure all the other agents work together smoothly.
-- **GitHub_Tool_Discovery_Agent**: The most unique agent. It actively searches GitHub for new security tools, analyzes them, installs them, and integrates them into the framework.
+### 🛠️ Built-in Specialized Components
+
+- **GitHub Tool Discovery System**: The only pre-built specialized component. It can search GitHub for security tools, analyze them, install them, and integrate them into your workflow. This makes Villager self-evolving and capable of discovering new tools automatically.
+
+### 🎯 Create Your Own Agents
+
+You can create agents for any security task by defining their name and task description. Here are some example agent types you might create:
+
+- **Reconnaissance_Agent**: "Perform comprehensive reconnaissance on target.com including subdomain enumeration, port scanning, and network mapping"
+- **Vulnerability_Assessment_Agent**: "Scan target.com for vulnerabilities using Nuclei, SQLMap, and other tools, focusing on OWASP Top 10"
+- **Web_Application_Testing_Agent**: "Conduct thorough web application security testing including XSS, SQLi, and authentication bypass attempts"
+- **Exploitation_Agent**: "Attempt to exploit identified vulnerabilities using Metasploit, custom payloads, and manual techniques"
+- **Post_Exploitation_Agent**: "Perform post-exploitation activities including lateral movement, privilege escalation, and persistence"
+- **Forensics_Agent**: "Analyze memory dumps and binary files for evidence of compromise and attack patterns"
+- **Monitoring_Agent**: "Set up continuous monitoring for new vulnerabilities and suspicious activity on target systems"
+- **Reporting_Agent**: "Generate comprehensive security assessment reports with findings, risk ratings, and remediation recommendations"
+- **Workflow_Coordinator_Agent**: "Coordinate multi-stage security assessments, managing the workflow between different testing phases"
+
+### 💡 Agent Creation Philosophy
+
+The power of Villager lies in its flexibility. Instead of being locked into predefined agent types, you can:
+- **Define custom tasks** that match your specific security assessment needs
+- **Combine multiple tools** and techniques in a single agent
+- **Create specialized workflows** for different types of assessments
+- **Adapt to new threats** by creating agents for emerging attack vectors
 
 ## 💡 Practical Examples
 
@@ -199,14 +215,20 @@ Here's how the AI decides whether to use a direct HexStrike command or a Village
 ### Scenario 2: Full Penetration Test
 
 - **You say**: "Perform a full penetration test on target.com"
-- **AI Decision**: This is a complex goal, not a single command. It requires planning and multiple steps. Use a Villager agent.
-- **Action**: `create_agent(name="Pentest_Coordinator", task="Coordinate a full pentest of target.com...")`
+- **AI Decision**: This is a complex goal requiring multiple steps and coordination. Create a custom Villager agent.
+- **Action**: `create_agent(name="Comprehensive_Pentest_Agent", task="Perform a full penetration test on target.com. Start with reconnaissance (subdomain enumeration, port scanning), then vulnerability assessment (Nuclei, SQLMap), followed by exploitation attempts, and finally generate a comprehensive report with findings and recommendations.")`
 
-### Scenario 3: Discovering New Tools
+### Scenario 3: Custom Bug Bounty Assessment
+
+- **You say**: "Create an agent for bug bounty testing focusing on web applications"
+- **AI Decision**: This requires a specialized approach for bug bounty methodology. Create a custom agent.
+- **Action**: `create_agent(name="Bug_Bounty_Web_Agent", task="Perform bug bounty assessment on target.com focusing on web applications. Include: 1) Subdomain discovery, 2) Web application mapping, 3) API endpoint discovery, 4) OWASP Top 10 testing, 5) Authentication bypass attempts, 6) Business logic testing, 7) Generate detailed report with proof-of-concept examples.")`
+
+### Scenario 4: Discovering New Tools
 
 - **You say**: "Find a new Python-based network scanner on GitHub and install it."
-- **AI Decision**: This is a job for the specialized discovery agent.
-- **Action**: `create_agent(name="Tool_Discovery_Agent", task="Search GitHub for Python network scanners, analyze the best one, install it, and test it.")`
+- **AI Decision**: This leverages the built-in GitHub Tool Discovery system. Create an agent that uses this capability.
+- **Action**: `create_agent(name="Tool_Discovery_Agent", task="Search GitHub for Python network scanners, analyze the best one, install it, and test it using the GitHub Tool Discovery system.")`
 
 ## 🛠️ Command Reference
 
