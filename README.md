@@ -12,6 +12,18 @@ I first ask all to go to https://github.com/0x4m4/hexstrike-ai and follow the in
 
 latest blog on this setup: https://medium.com/p/7550dcd3089b
 
+## 🖥️ Live Demo: Cursor Using Villager Tools
+
+![Cursor Using Villager MCP Tools](Screenshot_2025-09-30_00-13-51.png)
+
+**What this screenshot shows:**
+- **Cursor IDE** successfully using Villager MCP tools directly
+- **`mcp_villager_get_status`** tool being called to check server status
+- **Real-time response** showing Villager server is running with active agents
+- **Tool integration working** - no more need for HexStrike workarounds!
+
+This demonstrates the successful integration where Cursor can now directly access and use Villager's autonomous agent framework through the MCP protocol. The tool optimization we performed (removing 12 specialized HexStrike tools) made room for the Villager MCP tools to load properly. i think by offloading some of the longer complex tasks to the villager workflow will help to prevent cursor AI model from getting exhaustion and confused down the line. As described further down use hex for quick tasks and assesments use Villagers flow for the advanced complex tasks for example finding vulnerabilities and setting up persistance etc with advanced techniques with your own tools. remember github is intergrated 
+
 ## How It Works: The Core Idea
 
 The system is built on two main components that you can access through a single chat interface such as cursor, vscode even local setups. 
