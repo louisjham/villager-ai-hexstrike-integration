@@ -17,7 +17,7 @@ services:
       - ./data:/app/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:37695/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:37695/api/status"]
       interval: 30s
       timeout: 10s
       retries: 3

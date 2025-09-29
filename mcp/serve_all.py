@@ -26,11 +26,28 @@ async def start_fastapi() -> None:
     app = import_module('villager_server').app
     config = uvicorn.Config(app=app, host='0.0.0.0', port=37695, log_level='info')
     server = uvicorn.Server(config)
+    
+    # Display banner
     try:
         from villager_visuals import create_banner
         print(create_banner())
-    except Exception:
-        pass
+    except ImportError:
+        # Fallback banner if villager_visuals is not available
+        print("""
+╔══════════════════════════════════════════════════════════════╗
+║                    🏘️  VILLAGER AI 🏘️                      ║
+║                                                              ║
+║              Autonomous Agent Framework                      ║
+║              for Security Testing & Research                 ║
+║                                                              ║
+║  🤖 Create custom agents for any security task              ║
+║  🔧 GitHub Tool Discovery & Integration                     ║
+║  🚀 Flexible framework for autonomous operations            ║
+╚══════════════════════════════════════════════════════════════╝
+        """)
+    except Exception as e:
+        logger.warning(f"Could not display banner: {e}")
+    
     logger.info('🚀 Starting Villager FastAPI server on 0.0.0.0:37695')
     await server.serve()
 
@@ -47,6 +64,7 @@ async def start_mcp() -> None:
         assert spec and spec.loader
         spec.loader.exec_module(mod)
         run_mcp = mod.run
+    
     import sys
     sys.argv = ['villager_http_mcp', '--server', 'http://127.0.0.1:37695']
     logger.info('🤖 Starting MCP stdio server targeting http://127.0.0.1:37695')

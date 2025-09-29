@@ -287,11 +287,28 @@ def parse_args():
 
 async def run():
     args = parse_args()
+    
+    # Display banner
     try:
         from villager_visuals import create_banner
         print(create_banner())
-    except Exception:
-        pass
+    except ImportError:
+        # Fallback banner if villager_visuals is not available
+        print("""
+╔══════════════════════════════════════════════════════════════╗
+║                    🏘️  VILLAGER AI 🏘️                      ║
+║                                                              ║
+║              Autonomous Agent Framework                      ║
+║              for Security Testing & Research                 ║
+║                                                              ║
+║  🤖 Create custom agents for any security task              ║
+║  🔧 GitHub Tool Discovery & Integration                     ║
+║  🚀 Flexible framework for autonomous operations            ║
+╚══════════════════════════════════════════════════════════════╝
+        """)
+    except Exception as e:
+        logger.warning(f"Could not display banner: {e}")
+    
     logger.info("🚀 Starting Villager HTTP MCP")
     logger.info(f"🔗 Base URL: {args.server}")
     client = VillagerHttpClient(args.server, args.timeout)
