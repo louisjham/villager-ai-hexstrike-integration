@@ -96,6 +96,9 @@ Villager works **alongside** HexStrike to provide a complete cybersecurity autom
 - **Python 3.8+**
 - **Docker** (for Kali containers)
 - **Ollama** (for local AI model)
+- **Kali Linux Tools** (msfvenom, nmap, etc.)
+
+> **⚠️ First-time setup?** If tests fail on first install, check [SYSTEM_REQUIREMENTS.md](SYSTEM_REQUIREMENTS.md) for complete system dependencies.
 
 ## 🚀 Quick Start (Complete Setup)
 
