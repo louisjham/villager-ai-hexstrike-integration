@@ -326,9 +326,8 @@ async def process_security_scan(scan_id: str):
 def start_server():
     """Start the Villager server."""
     try:
-        from villager_visuals import create_ascii_font, create_banner, create_startup_message, create_server_info, create_success_message
-        print(create_ascii_font())
-        print(create_banner())
+        from villager_visuals import create_integrated_banner, create_startup_message, create_server_info, create_success_message
+        print(create_integrated_banner())
         print(create_startup_message())
         print(create_server_info())
         print(create_success_message("Villager AI server starting successfully"))

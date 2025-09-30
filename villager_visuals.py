@@ -14,9 +14,12 @@ RESET = '\033[0m'
 BLUE_BG = '\033[44m'
 WHITE = '\033[97m'
 RED = '\033[91m'
+DEEP_RED = '\033[38;5;196m'  # Deep red for VILLAGER
 GREEN = '\033[92m'
 YELLOW = '\033[93m'
 MAGENTA = '\033[95m'
+ORANGE = '\033[38;5;208m'    # Orange for the hat
+PURPLE = '\033[38;5;129m'    # Purple accent
 
 def create_banner():
     """Create a fancy blue-themed ASCII banner for Villager AI."""
@@ -34,20 +37,49 @@ def create_banner():
     """
     return banner
 
-def create_ascii_font():
-    """ASCII art font for VILLAGER with colors."""
+def create_ascii_hat():
+    """ASCII art hat with orange color."""
     return f"""
-{CYAN}██▒   █▓ ██▓ ██▓     ██▓    ▄▄▄        ▄████ ▓█████  ██▀███        {RESET}
-{CYAN}▓██░   █▒▓██▒▓██▒    ▓██▒   ▒████▄     ██▒ ▀█▒▓█   ▀ ▓██ ▒ ██▒      {RESET}
-{CYAN} ▓██  █▒░▒██▒▒██░    ▒██░   ▒██  ▀█▄  ▒██░▄▄▄░▒███   ▓██ ░▄█ ▒      {RESET}
-{CYAN}  ▒██ █░░░██░▒██░    ▒██░   ░██▄▄▄▄██ ░▓█  ██▓▒▓█  ▄ ▒██▀▀█▄        {RESET}
-{CYAN}   ▒▀█░  ░██░░██████▒░██████▒▓█   ▓██▒░▒▓███▀▒░▒████▒░██▓ ▒██▒      {RESET}
-{CYAN}   ░ ▐░  ░▓  ░ ▒░▓  ░░ ▒░▓  ░▒▒   ▓▒█░ ░▒   ▒ ░░ ▒░ ░░ ▒▓ ░▒▓░      {RESET}
-{CYAN}   ░ ░░   ▒ ░░ ░ ▒  ░░ ░ ▒  ░ ▒   ▒▒ ░  ░   ░  ░ ░  ░  ░▒ ░ ▒░      {RESET}
-{CYAN}     ░░   ▒ ░  ░ ░     ░ ░    ░   ▒   ░ ░   ░    ░     ░░   ░       {RESET}
-{CYAN}      ░   ░      ░  ░    ░  ░     ░  ░      ░    ░  ░   ░           {RESET}
-{CYAN}     ░                                                               {RESET}
+{ORANGE}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀{RESET}
+{ORANGE}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀{RESET}
+{ORANGE}⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣾⣿⣿⣿⣿⣿⣿⣷⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀{RESET}
+{ORANGE}⠀⠀⠀⠀⠀⠀⠀⠀⠴⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀{RESET}
+{ORANGE}⠀⠀⠀⠀⠀⣠⣴⣷⣦⣤⣈⡉⠉⠛⠛⣿⣿⣿⣿⣿⣿⣿⣿⣦⣄⠀⠀⠀⠀⠀{RESET}
+{ORANGE}⠀⠀⠀⣠⣄⡉⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀{RESET}
+{ORANGE}⢀⣤⣾⣿⣿⣿⣷⣶⣤⣤⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⡀{RESET}
+{ORANGE}⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿{RESET}
+{ORANGE}⠈⠛⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠁{RESET}
+{ORANGE}⠀⠀⠀⠀⠘⣿⡛⠛⠛⠿⠿⠿⢿⣿⣿⣿⣿⡿⠿⠿⠿⠛⠛⢛⣿⠃⠀⠀⠀⠀{RESET}
+{ORANGE}⠀⠀⠀⠀⠀⠙⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⠋⠀⠀⠀⠀⠀{RESET}
+{ORANGE}⠀⠀⠀⠀⠀⠀⠈⠻⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⠟⠁⠀⠀⠀⠀⠀⠀{RESET}
+{ORANGE}⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠿⣶⣤⣤⣤⣤⣤⣤⣶⠿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀{RESET}
+{ORANGE}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣨⡿⢿⣅⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀{RESET}
+{ORANGE}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠋⠀⠀⠙⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀{RESET}
 """
+
+def create_ascii_font():
+    """ASCII art font for VILLAGER with deep red color."""
+    return f"""
+{DEEP_RED}██▒   █▓ ██▓ ██▓     ██▓    ▄▄▄        ▄████ ▓█████  ██▀███        {RESET}
+{DEEP_RED}▓██░   █▒▓██▒▓██▒    ▓██▒   ▒████▄     ██▒ ▀█▒▓█   ▀ ▓██ ▒ ██▒      {RESET}
+{DEEP_RED} ▓██  █▒░▒██▒▒██░    ▒██░   ▒██  ▀█▄  ▒██░▄▄▄░▒███   ▓██ ░▄█ ▒      {RESET}
+{DEEP_RED}  ▒██ █░░░██░▒██░    ▒██░   ░██▄▄▄▄██ ░▓█  ██▓▒▓█  ▄ ▒██▀▀█▄        {RESET}
+{DEEP_RED}   ▒▀█░  ░██░░██████▒░██████▒▓█   ▓██▒░▒▓███▀▒░▒████▒░██▓ ▒██▒      {RESET}
+{DEEP_RED}   ░ ▐░  ░▓  ░ ▒░▓  ░░ ▒░▓  ░▒▒   ▓▒█░ ░▒   ▒ ░░ ▒░ ░░ ▒▓ ░▒▓░      {RESET}
+{DEEP_RED}   ░ ░░   ▒ ░░ ░ ▒  ░░ ░ ▒  ░ ▒   ▒▒ ░  ░   ░  ░ ░  ░  ░▒ ░ ▒░      {RESET}
+{DEEP_RED}     ░░   ▒ ░  ░ ░     ░ ░    ░   ▒   ░ ░   ░    ░     ░░   ░       {RESET}
+{DEEP_RED}      ░   ░      ░  ░    ░  ░     ░  ░      ░    ░  ░   ░           {RESET}
+{DEEP_RED}     ░                                                               {RESET}
+"""
+
+def create_integrated_banner():
+    """Create an integrated banner with hat and VILLAGER text."""
+    hat = create_ascii_hat()
+    villager_text = create_ascii_font()
+    banner = create_banner()
+    
+    # Combine them with proper spacing
+    return f"{hat}\n{villager_text}\n{banner}"
 
 def create_logo():
     """Create a fancy blue-themed text logo."""
@@ -102,7 +134,6 @@ def create_security_message(message):
     return f"{RED}🔒 {message}{RESET}"
 
 if __name__ == "__main__":
-    print(create_ascii_font())
-    print(create_banner())
+    print(create_integrated_banner())
     print(create_startup_message())
     print(create_server_info())
