@@ -139,10 +139,18 @@ install_docker() {
 setup_kali_container() {
     print_status "Setting up Kali Linux Docker container (True Villager Architecture)..."
     
-    # Pull Kali Linux base Docker image for persistent SSH containers
-    print_status "Pulling Kali Linux base image for persistent containers..."
-    print_status "Containers will run SSH daemon with 24-hour self-destruct"
-    docker pull kalilinux/kali-rolling
+    # Attempt to pull Cyberspike image first, then fallback to standard Kali
+    print_status "Attempting to pull Cyberspike Docker image..."
+    print_status "Image: gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main"
+    
+    if timeout 30 docker pull gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main 2>/dev/null; then
+        print_success "✅ Cyberspike Docker image pulled successfully"
+        print_status "Using Cyberspike's pre-configured image with tools pre-installed"
+    else
+        print_warning "⚠️  Cyberspike image not accessible, using standard Kali image"
+        print_status "Pulling standard Kali Linux base image for persistent containers..."
+        docker pull kalilinux/kali-rolling
+    fi
     
     # Create workspace directory
     print_status "Creating workspace directory..."
@@ -151,6 +159,7 @@ setup_kali_container() {
     print_success "Kali Linux container setup complete (True Villager Architecture)"
     print_status "✅ Persistent SSH containers with 24-hour self-destruct"
     print_status "✅ Tools pre-installed in containers (no on-demand installation)"
+    print_status "✅ Cyberspike image integration with robust fallback"
     print_status "✅ Forensic evasion through ephemeral container lifecycle"
 }
 
@@ -275,11 +284,19 @@ display_final_instructions() {
     echo "   • You may need to log out and back in for Docker group changes"
     echo "   • Ollama is running in the background"
     echo "   • All services are now running"
+    echo "   • Cyberspike image integration with automatic fallback"
+    echo ""
+    echo "🐳 Cyberspike Integration:"
+    echo "   • Attempts to use Cyberspike Docker image on startup"
+    echo "   • Falls back to standard Kali image if Cyberspike is inaccessible"
+    echo "   • Containers include pre-installed security tools"
+    echo "   • SSH-based command execution with 24-hour persistence"
     echo ""
     echo "🔧 Troubleshooting:"
     echo "   • Check logs: tail -f logs/*.log"
     echo "   • Restart services: ./start_villager_proper.sh"
     echo "   • Run tests: ./tests/run_tests.sh"
+    echo "   • Docker issues: sudo systemctl status docker"
     echo ""
 }
 

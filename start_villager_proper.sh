@@ -18,6 +18,22 @@ if [ ! -d "villager-venv-new" ]; then
     exit 1
 fi
 
+# Check Docker availability
+if ! command -v docker &> /dev/null; then
+    echo "❌ Docker is not installed or not in PATH."
+    echo "   Please install Docker to use Villager's containerized execution."
+    exit 1
+fi
+
+# Check if Docker daemon is running
+if ! docker info &> /dev/null; then
+    echo "❌ Docker daemon is not running."
+    echo "   Please start Docker daemon to use Villager's containerized execution."
+    exit 1
+fi
+
+echo "✅ Docker is available and running"
+
 # Activate virtual environment
 echo "🔧 Activating Villager virtual environment..."
 source villager-venv-new/bin/activate
@@ -66,9 +82,11 @@ fi
 echo "🚀 Starting Villager with proper architecture..."
 echo "   - TaskNode for task execution and decomposition"
 echo "   - MCP Client (Port 25989) for external tool access"
-echo "   - Kali Driver (Port 1611) for containerized execution"
+echo "   - Kali Driver (Port 1611) for containerized execution with Cyberspike integration"
 echo "   - Agent Scheduler for LLM orchestration"
 echo "   - Tools Manager for function registry"
+echo "   - Cyberspike Docker image support with robust fallback"
+echo "   - Persistent containers with 24-hour self-destruct"
 echo ""
 
 # Function to check if port is in use
@@ -192,3 +210,14 @@ echo "   - Browser Automation: http://localhost:8080"
 echo ""
 echo "✅ Villager framework is fully operational!"
 echo "🎯 You can now use Villager MCP tools in Cursor to create tasks and execute them."
+echo ""
+echo "🐳 Cyberspike Integration:"
+echo "   - Attempts to use Cyberspike Docker image: gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main"
+echo "   - Falls back to standard Kali image if Cyberspike registry is inaccessible"
+echo "   - Containers include pre-installed security tools (msfvenom, nmap, etc.)"
+echo "   - SSH-based command execution with 24-hour container persistence"
+echo ""
+echo "🔧 Troubleshooting:"
+echo "   - If containers fail to create, check Docker daemon status"
+echo "   - Cyberspike image may require authentication or network access"
+echo "   - Standard Kali image will be used as fallback automatically"
