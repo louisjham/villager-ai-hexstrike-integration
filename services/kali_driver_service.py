@@ -167,10 +167,13 @@ def execute_via_ssh(container: KaliContainer, command: str) -> dict:
     """Execute command via SSH (true Villager architecture)"""
     try:
         # Use actual SSH connection like Cyberspike does
+        # Use sshpass for password authentication
         ssh_cmd = [
+            'sshpass', '-p', 'password',
             'ssh', '-o', 'StrictHostKeyChecking=no', 
             '-o', 'UserKnownHostsFile=/dev/null',
             '-o', 'ConnectTimeout=10',
+            '-o', 'PasswordAuthentication=yes',
             f'root@localhost', '-p', str(container.ssh_port),
             f'cd /workspace && {command}'
         ]
