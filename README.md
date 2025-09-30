@@ -1,5 +1,9 @@
 # 🏘️ Villager AI Framework
 
+<div align="center">
+  <img src="VillagerXHexstrike.png" alt="Villager AI Framework" width="600" />
+</div>
+
 **AI-Driven Cybersecurity Automation Platform**
 
 Villager is a powerful AI framework that orchestrates cybersecurity operations through intelligent task decomposition, agent scheduling, and seamless integration with security tools. It implements the true Villager architecture with TaskNode execution, MCP Client integration, and containerized Kali Linux environments.
