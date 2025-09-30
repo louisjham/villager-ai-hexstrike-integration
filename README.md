@@ -1,5 +1,3 @@
-# 🏘️ Villager AI Framework
-
 <div align="center">
   <img src="VillagerXHexstrike.png" alt="Villager AI Framework" width="600" />
 </div>
