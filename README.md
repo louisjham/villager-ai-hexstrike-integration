@@ -4,6 +4,8 @@
 
 **AI-Driven Cybersecurity Automation Platform**
 
+*BUG* currently the docker containers are not installing tools for each ssh persistent dockers. working on this 
+
 Villager is a powerful AI framework that orchestrates cybersecurity operations through intelligent task decomposition, agent scheduling, and seamless integration with security tools. It implements the true Villager architecture with TaskNode execution, MCP Client integration, and containerized Kali Linux environments.
 
 Before implementing this current hybrid setup follow the instructions on https://github.com/0x4m4/hexstrike-ai and make sure its configured with your chosen enviroment. Currently i have only tested this using cursor AI and using a local uncensored deepseek model to orchestrate the villager workflow. I hope this enhances everyones automation capabilties and we can solve the long task completion issue people face when running very long assesments. Villager should be able to handle and batch it intelligently avoiding exhaustion of the cursor model on its own. 
