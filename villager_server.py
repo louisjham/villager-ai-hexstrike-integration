@@ -28,11 +28,37 @@ from pydantic import BaseModel
 from typing import Dict, Any, List, Optional
 import uuid
 from datetime import datetime
-import asyncio
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure colored logging
+class ColoredFormatter(logging.Formatter):
+    """Custom formatter with colors for different log levels."""
+    
+    COLORS = {
+        'DEBUG': '\033[96m',    # Cyan
+        'INFO': '\033[94m',     # Blue
+        'WARNING': '\033[93m',  # Yellow
+        'ERROR': '\033[91m',    # Red
+        'CRITICAL': '\033[95m', # Magenta
+    }
+    RESET = '\033[0m'
+    
+    def format(self, record):
+        log_color = self.COLORS.get(record.levelname, self.RESET)
+        record.levelname = f"{log_color}{record.levelname}{self.RESET}"
+        return super().format(record)
+
+# Set up colored logging
 logger = logging.getLogger(__name__)
+handler = logging.StreamHandler()
+formatter = ColoredFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.WARNING)  # Only show warnings and errors
+
+# Suppress uvicorn access logs
+logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
+
+import asyncio
 
 # Global storage
 active_agents = {}
@@ -101,6 +127,14 @@ async def create_agent(request: AgentRequest):
     # Start background task
     asyncio.create_task(process_agent_task(agent_id))
     
+    # Use colored logging
+    try:
+        from villager_visuals import create_agent_message, create_success_message
+        print(create_agent_message(f"Created agent '{request.name}' (ID: {agent_id[:8]}...) - Task: {request.task[:50]}{'...' if len(request.task) > 50 else ''}"))
+        print(create_success_message(f"Agent '{request.name}' is now active and processing"))
+    except ImportError:
+        logger.info(f"Agent {request.name} created with ID: {agent_id}")
+    
     return {
         "id": agent_id,
         "name": request.name,
@@ -126,6 +160,14 @@ async def run_scan(request: ScanRequest):
     
     # Start background task
     asyncio.create_task(process_security_scan(scan_id))
+    
+    # Use colored logging
+    try:
+        from villager_visuals import create_scan_message, create_success_message
+        print(create_scan_message(f"Started {request.scan_type} scan on {request.target} (ID: {scan_id[:8]}...)"))
+        print(create_success_message(f"Security scan is now running"))
+    except ImportError:
+        logger.info(f"Scan {scan_id} started on {request.target}")
     
     return {
         "id": scan_id,
@@ -239,12 +281,23 @@ async def process_agent_task(agent_id: str):
         agent["status"] = "completed"
         agent["completed"] = datetime.now().isoformat()
         
-        logger.info(f"Agent {agent_id} completed task: {agent['task']}")
+        # Use colored logging
+        try:
+            from villager_visuals import create_success_message, create_agent_message
+            print(create_agent_message(f"Agent '{agent['name']}' completed task: {agent['task'][:60]}{'...' if len(agent['task']) > 60 else ''}"))
+            print(create_success_message(f"Agent '{agent['name']}' finished successfully - Progress: 100%"))
+        except ImportError:
+            logger.info(f"Agent {agent_id} completed task: {agent['task']}")
         
     except Exception as e:
         agent["status"] = "error"
         agent["error"] = str(e)
-        logger.error(f"Agent {agent_id} error: {e}")
+        # Use colored error logging
+        try:
+            from villager_visuals import create_error_message
+            print(create_error_message(f"Agent '{agent['name']}' failed - Error: {str(e)[:80]}{'...' if len(str(e)) > 80 else ''}"))
+        except ImportError:
+            logger.error(f"Agent {agent_id} error: {e}")
 
 async def process_security_scan(scan_id: str):
     """Process security scan in background."""
@@ -273,19 +326,26 @@ async def process_security_scan(scan_id: str):
 def start_server():
     """Start the Villager server."""
     try:
-        from villager_visuals import create_banner
+        from villager_visuals import create_ascii_font, create_banner, create_startup_message, create_server_info, create_success_message
+        print(create_ascii_font())
         print(create_banner())
-    except Exception:
+        print(create_startup_message())
+        print(create_server_info())
+        print(create_success_message("Villager AI server starting successfully"))
+    except Exception as e:
+        from villager_visuals import create_error_message
+        print(create_error_message(f"Failed to load visuals: {e}"))
         print("🚀 Starting Villager Security Framework")
-    print("🌐 Server: http://0.0.0.0:37695")
-    print("📚 API Documentation: http://127.0.0.1:37695/docs")
-    print("=" * 50)
+        print("🌐 Server: http://0.0.0.0:37695")
+        print("📚 API Documentation: http://127.0.0.1:37695/docs")
+        print("=" * 50)
     
     uvicorn.run(
         app,
         host="0.0.0.0",
         port=37695,
-        log_level="info"
+        log_level="warning",
+        access_log=False
     )
 
 if __name__ == "__main__":

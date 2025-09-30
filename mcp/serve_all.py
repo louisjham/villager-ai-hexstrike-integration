@@ -24,13 +24,17 @@ if THIS_DIR not in sys.path:
 
 async def start_fastapi() -> None:
     app = import_module('villager_server').app
-    config = uvicorn.Config(app=app, host='0.0.0.0', port=37695, log_level='info')
+    config = uvicorn.Config(app=app, host='0.0.0.0', port=37695, log_level='warning', access_log=False)
     server = uvicorn.Server(config)
     
     # Display banner
     try:
-        from villager_visuals import create_banner
+        from villager_visuals import create_ascii_font, create_banner, create_startup_message, create_server_info, create_success_message
+        print(create_ascii_font())
         print(create_banner())
+        print(create_startup_message())
+        print(create_server_info())
+        print(create_success_message("Villager FastAPI server starting successfully"))
     except ImportError:
         # Fallback banner if villager_visuals is not available
         print("""
@@ -46,7 +50,8 @@ async def start_fastapi() -> None:
 ╚══════════════════════════════════════════════════════════════╝
         """)
     except Exception as e:
-        logger.warning(f"Could not display banner: {e}")
+        from villager_visuals import create_error_message
+        print(create_error_message(f"Could not display banner: {e}"))
     
     logger.info('🚀 Starting Villager FastAPI server on 0.0.0.0:37695')
     await server.serve()

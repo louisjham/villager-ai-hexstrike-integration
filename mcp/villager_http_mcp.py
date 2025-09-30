@@ -290,8 +290,11 @@ async def run():
     
     # Display banner
     try:
-        from villager_visuals import create_banner
+        from villager_visuals import create_ascii_font, create_banner, create_startup_message, create_success_message
+        print(create_ascii_font())
         print(create_banner())
+        print(create_startup_message())
+        print(create_success_message("Villager HTTP MCP starting successfully"))
     except ImportError:
         # Fallback banner if villager_visuals is not available
         print("""
@@ -307,7 +310,8 @@ async def run():
 ╚══════════════════════════════════════════════════════════════╝
         """)
     except Exception as e:
-        logger.warning(f"Could not display banner: {e}")
+        from villager_visuals import create_error_message
+        print(create_error_message(f"Could not display banner: {e}"))
     
     logger.info("🚀 Starting Villager HTTP MCP")
     logger.info(f"🔗 Base URL: {args.server}")
