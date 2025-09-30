@@ -93,10 +93,10 @@ Villager works **alongside** HexStrike to provide a complete cybersecurity autom
 
 ### Prerequisites
 - **Python 3.8+**
-- **Docker** (for containerized security tools)
+- **Docker** (for persistent SSH containers)
 - **Ollama** (for local AI model)
 
-> **🎯 Containerized Security**: All security tools run inside Docker containers - no host installation needed!
+> **🎯 True Villager Architecture**: Persistent SSH containers with 24-hour self-destruct, tools pre-installed, forensic evasion through ephemeral lifecycle!
 
 ## 🚀 Quick Start (Complete Setup)
 

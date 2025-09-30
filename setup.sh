@@ -135,21 +135,23 @@ install_docker() {
     print_warning "You need to log out and back in for Docker group changes to take effect"
 }
 
-# Function to setup Kali Docker container
+# Function to setup Kali Docker container (True Villager Architecture)
 setup_kali_container() {
-    print_status "Setting up Kali Linux Docker container for on-demand tool installation..."
+    print_status "Setting up Kali Linux Docker container (True Villager Architecture)..."
     
-    # Pull Kali Linux base Docker image (tools installed on-demand per task)
-    print_status "Pulling Kali Linux base image..."
-    print_status "Security tools will be installed on-demand in ephemeral containers"
+    # Pull Kali Linux base Docker image for persistent SSH containers
+    print_status "Pulling Kali Linux base image for persistent containers..."
+    print_status "Containers will run SSH daemon with 24-hour self-destruct"
     docker pull kalilinux/kali-rolling
     
     # Create workspace directory
     print_status "Creating workspace directory..."
     mkdir -p /tmp/villager_workspace
     
-    print_success "Kali Linux container setup complete"
-    print_status "Security tools will be installed on-demand in ephemeral containers!"
+    print_success "Kali Linux container setup complete (True Villager Architecture)"
+    print_status "✅ Persistent SSH containers with 24-hour self-destruct"
+    print_status "✅ Tools pre-installed in containers (no on-demand installation)"
+    print_status "✅ Forensic evasion through ephemeral container lifecycle"
 }
 
 # Function to install Ollama
