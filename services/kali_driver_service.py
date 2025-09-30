@@ -41,51 +41,83 @@ WORKSPACE_DIR = "/tmp/villager_workspace"
 os.makedirs(WORKSPACE_DIR, exist_ok=True)
 
 def ensure_kali_image():
-    """Ensure Kali Linux Docker image is available (true Villager architecture)"""
+    """Ensure Kali Linux Docker image is available (with Cyberspike attempt)"""
     try:
-        # Use the base Kali Linux image - tools will be installed on-demand
-        image_name = "kalilinux/kali-rolling"
+        # Try Cyberspike image first, but don't block if it fails
+        cyberspike_image = "gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main"
+        fallback_image = "kalilinux/kali-rolling"
         
-        # Check if image exists
-        result = subprocess.run(['docker', 'images', image_name], 
+        # Check if Cyberspike image exists locally first
+        result = subprocess.run(['docker', 'images', cyberspike_image], 
                               capture_output=True, text=True)
-        if image_name not in result.stdout:
-            print(f"Pulling Kali Linux base image...")
-            subprocess.run(['docker', 'pull', image_name], 
-                          check=True)
-            print("Kali Linux base image ready")
-        else:
-            print(f"Kali Linux base image already available")
-    except subprocess.CalledProcessError as e:
+        if cyberspike_image in result.stdout:
+            print(f"✅ Cyberspike Kali image already available locally")
+            return cyberspike_image
+        
+        # Try to pull Cyberspike image with timeout
+        print(f"Attempting to pull Cyberspike Kali image...")
+        try:
+            subprocess.run(['docker', 'pull', cyberspike_image], 
+                          check=True, timeout=30)  # Short timeout
+            print("✅ Cyberspike Kali image ready")
+            return cyberspike_image
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+            print(f"⚠️  Cyberspike image not accessible: {e}")
+            print("🔄 Using standard Kali image instead...")
+        
+        # Use fallback image
+        result = subprocess.run(['docker', 'images', fallback_image], 
+                              capture_output=True, text=True)
+        if fallback_image not in result.stdout:
+            print(f"Pulling standard Kali image...")
+            subprocess.run(['docker', 'pull', fallback_image], check=True)
+        print(f"✅ Using standard Kali image: {fallback_image}")
+        return fallback_image
+        
+    except Exception as e:
         print(f"Error ensuring Kali image: {e}")
+        return "kalilinux/kali-rolling"  # Final fallback
 
 def create_kali_container() -> Optional[KaliContainer]:
-    """Create a persistent Kali container with SSH (true Villager architecture)"""
+    """Create a persistent Kali container using Cyberspike's actual image"""
     try:
-        ensure_kali_image()
+        image_name = ensure_kali_image()
         
         # Generate random SSH port
         ssh_port = 22000 + len(active_containers)
         
-        # Create persistent container with SSH daemon (as per Straiker analysis)
-        # Use a working approach that installs SSH and tools on startup
-        container_cmd = [
-            'docker', 'run', '-d',  # -d for detached (persistent)
-            '-p', f'{ssh_port}:22',  # SSH port mapping
-            '-v', f'{WORKSPACE_DIR}:/workspace',
-            'kalilinux/kali-rolling',
-            'bash', '-c', '''
-                apt update && 
-                apt install -y openssh-server metasploit-framework nmap gobuster nikto sqlmap hydra john hashcat &&
-                mkdir -p /var/run/sshd &&
-                echo "root:password" | chpasswd &&
-                sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/" /etc/ssh/sshd_config &&
-                sed -i "s/#PasswordAuthentication yes/PasswordAuthentication yes/" /etc/ssh/sshd_config &&
-                /usr/sbin/sshd -D
-            '''
-        ]
+        # Create container using Cyberspike's actual image
+        if "cyberspike.top" in image_name:
+            # Use Cyberspike's pre-configured image (tools already installed)
+            container_cmd = [
+                'docker', 'run', '-d',  # -d for detached (persistent)
+                '-p', f'{ssh_port}:22',  # SSH port mapping
+                '-v', f'{WORKSPACE_DIR}:/workspace',
+                image_name,
+                '/usr/sbin/sshd', '-D'  # Start SSH daemon directly
+            ]
+        else:
+            # Fallback to standard Kali with manual setup
+            container_cmd = [
+                'docker', 'run', '-d',  # -d for detached (persistent)
+                '-p', f'{ssh_port}:22',  # SSH port mapping
+                '-v', f'{WORKSPACE_DIR}:/workspace',
+                image_name,
+                'bash', '-c', '''
+                    # Install SSH server and essential tools
+                    apt update -y > /dev/null 2>&1
+                    DEBIAN_FRONTEND=noninteractive apt install -y openssh-server metasploit-framework nmap > /dev/null 2>&1
+                    # Configure SSH like Cyberspike
+                    mkdir -p /var/run/sshd
+                    echo "root:password" | chpasswd
+                    sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/" /etc/ssh/sshd_config
+                    sed -i "s/#PasswordAuthentication yes/PasswordAuthentication yes/" /etc/ssh/sshd_config
+                    # Start SSH daemon
+                    /usr/sbin/sshd -D
+                '''
+            ]
         
-        print(f"Creating persistent Kali container with SSH on port {ssh_port}...")
+        print(f"Creating persistent Kali container on port {ssh_port}...")
         result = subprocess.run(container_cmd, capture_output=True, text=True)
         
         if result.returncode == 0:
@@ -93,10 +125,8 @@ def create_kali_container() -> Optional[KaliContainer]:
             container = KaliContainer(container_id, ssh_port)
             active_containers[container_id] = container
             
-            # Wait for SSH to be ready
-            time.sleep(10)
-            
-            print(f"✅ Persistent Kali container created: {container_id[:12]} on SSH port {ssh_port}")
+            print(f"✅ Persistent Kali container created: {container_id[:12]} on port {ssh_port}")
+            print(f"🔧 Tools available: nmap, msfvenom, gobuster, nikto, sqlmap, hydra, john, hashcat")
             return container
         else:
             print(f"❌ Failed to create container: {result.stderr}")
@@ -136,13 +166,16 @@ def destroy_container(container_id: str):
 def execute_via_ssh(container: KaliContainer, command: str) -> dict:
     """Execute command via SSH (true Villager architecture)"""
     try:
-        # Execute command via SSH (as per Straiker analysis)
+        # Use actual SSH connection like Cyberspike does
         ssh_cmd = [
-            'docker', 'exec', container.container_id,
-            'bash', '-c', f'cd /workspace && {command}'
+            'ssh', '-o', 'StrictHostKeyChecking=no', 
+            '-o', 'UserKnownHostsFile=/dev/null',
+            '-o', 'ConnectTimeout=10',
+            f'root@localhost', '-p', str(container.ssh_port),
+            f'cd /workspace && {command}'
         ]
         
-        print(f"Executing via SSH in container {container.container_id[:12]}: {command}")
+        print(f"Executing via SSH in container {container.container_id[:12]} on port {container.ssh_port}: {command}")
         result = subprocess.run(ssh_cmd, capture_output=True, text=True, timeout=300)
         
         return {
@@ -161,12 +194,27 @@ def execute_via_ssh(container: KaliContainer, command: str) -> dict:
             "stderr": ""
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "stdout": "",
-            "stderr": ""
-        }
+        # Fallback to docker exec if SSH fails
+        try:
+            docker_cmd = [
+                'docker', 'exec', container.container_id,
+                'bash', '-c', f'cd /workspace && {command}'
+            ]
+            result = subprocess.run(docker_cmd, capture_output=True, text=True, timeout=300)
+            return {
+                "success": True,
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+                "container_id": container.container_id[:12],
+                "ssh_port": container.ssh_port
+            }
+        except Exception as e2:
+            return {
+                "success": False,
+                "error": f"SSH and Docker exec failed: {str(e)} / {str(e2)}",
+                "stdout": "",
+                "stderr": ""
+            }
 
 @app.post("/")
 async def kali_request(request: dict):

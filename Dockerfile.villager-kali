@@ -1,0 +1,31 @@
+
+FROM kalilinux/kali-rolling
+
+# Install only essential tools for faster build
+RUN apt update && apt install -y \
+    openssh-server \
+    metasploit-framework \
+    nmap \
+    gobuster \
+    nikto \
+    sqlmap \
+    hydra \
+    john \
+    hashcat \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configure SSH
+RUN mkdir /var/run/sshd \
+    && echo 'root:password' | chpasswd \
+    && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
+    && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+# Set working directory
+WORKDIR /workspace
+
+# Expose SSH port
+EXPOSE 22
+
+# Start SSH daemon (as per Villager architecture)
+CMD ["/usr/sbin/sshd", "-D"]
