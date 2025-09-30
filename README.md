@@ -10,6 +10,22 @@ Before implementing this current hybrid setup follow the instructions on https:/
 
 This is just an idea to inspire others to test similiar things and contribute 
 
+## 🚀 Quick Start (Copy & Paste)
+
+```bash
+# Complete setup in one go
+git clone https://github.com/Yenn503/villager-ai-hexstrike-integration.git
+cd villager-ai-hexstrike-integration
+python -m venv villager-venv-new
+source villager-venv-new/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+./tests/run_tests.sh
+./start_villager_proper.sh
+```
+
+**That's it!** Your Villager AI framework is now running. See the [detailed installation guide](#-quick-start-complete-setup) below for step-by-step instructions.
+
 ##  What is Villager?
 
 Villager is an **AI orchestration framework** that:
@@ -81,12 +97,27 @@ Villager works **alongside** HexStrike to provide a complete cybersecurity autom
 - **Docker** (for Kali containers)
 - **Ollama** (for local AI model)
 
-### Installation
+## 🚀 Quick Start (Complete Setup)
+
+### **One-Command Installation**
+```bash
+# Clone and setup everything
+git clone https://github.com/Yenn503/villager-ai-hexstrike-integration.git
+cd villager-ai-hexstrike-integration
+python -m venv villager-venv-new
+source villager-venv-new/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+./tests/run_tests.sh
+./start_villager_proper.sh
+```
+
+### **Step-by-Step Installation**
 
 1. **Clone the repository:**
 ```bash
-git clone <repository-url>
-cd Villager-AI
+git clone https://github.com/Yenn503/villager-ai-hexstrike-integration.git
+cd villager-ai-hexstrike-integration
 ```
 
 2. **Set up virtual environment:**
@@ -95,7 +126,7 @@ python -m venv villager-venv-new
 source villager-venv-new/bin/activate  # On Windows: villager-venv-new\Scripts\activate
 ```
 
-3. **Install dependencies:**
+3. **Install all dependencies:**
 ```bash
 pip install -r requirements.txt
 ```
@@ -127,16 +158,49 @@ cp .env.example .env
 - **OpenAI API**: Cloud-based AI with API key
 - **GitHub Integration**: Optional repository management features
 
-6. **Start Villager:**
+6. **Verify installation:**
+```bash
+./tests/run_tests.sh
+```
+
+7. **Start Villager:**
 ```bash
 ./start_villager_proper.sh
 ```
 
-This will start all services:
-- **Villager Server**: `http://localhost:37695`
-- **MCP Client**: `http://localhost:25989`
-- **Kali Driver**: `http://localhost:1611`
-- **Browser Automation**: `http://localhost:8080`
+### **✅ Verification**
+After installation, you should see:
+- ✅ All services running on their respective ports
+- ✅ Villager Server: http://localhost:37695
+- ✅ MCP Client: http://localhost:25989
+- ✅ Kali Driver: http://localhost:1611
+- ✅ Browser Service: http://localhost:8080
+
+### **🔧 Troubleshooting**
+If you encounter issues:
+
+1. **Check if all services are running:**
+```bash
+lsof -i -P -n | grep LISTEN | grep -E "(25989|1611|37695|8080)"
+```
+
+2. **Check service logs:**
+```bash
+tail -f logs/villager_server.log
+tail -f logs/mcp_client.log
+tail -f logs/kali_driver.log
+```
+
+3. **Re-run tests:**
+```bash
+./tests/run_tests.sh
+```
+
+4. **Restart all services:**
+```bash
+pkill -f "python.*services"
+./start_villager_proper.sh
+```
 
 ## 🔧 MCP Integration
 
