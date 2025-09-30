@@ -123,14 +123,18 @@ ollama serve &
 
 5. **Configure environment:**
 ```bash
-# Set up Ollama (recommended - free and uncensored)
-export LLM_PROVIDER="ollama"
-export OLLAMA_BASE_URL="http://localhost:11434"
-export OLLAMA_MODEL="deepseek-r1-uncensored"
+# Copy the example configuration
+cp .env.example .env
 
-# Optional: GitHub integration
-export GITHUB_TOKEN="your-github-token-here"
+# Edit .env with your preferred settings
+# The file includes detailed instructions for each option
 ```
+
+**Quick Configuration Options:**
+- **Ollama (Recommended)**: Free, local, uncensored AI - no API keys needed
+- **DeepSeek API**: Cloud-based AI with API key
+- **OpenAI API**: Cloud-based AI with API key
+- **GitHub Integration**: Optional repository management features
 
 6. **Start Villager:**
 ```bash
@@ -253,7 +257,31 @@ export VILLAGER_PORT="37695"
 
 ## 🧪 Testing
 
-Test the Villager integration:
+### Comprehensive Test Suite
+
+Run the complete test suite to verify all components are working:
+
+```bash
+# Run all tests (recommended)
+./tests/run_tests.sh
+
+# Or run directly
+python3 tests/test_villager_framework.py
+```
+
+The test suite verifies:
+- ✅ Environment setup and dependencies
+- ✅ Villager core imports and functionality
+- ✅ MCP server initialization and status
+- ✅ LLM provider connection (Ollama/DeepSeek/OpenAI)
+- ✅ Tool execution (Python, OS commands)
+- ✅ Security tools availability (MSFVenom, Nmap, etc.)
+- ✅ GitHub integration (optional)
+- ✅ Docker availability
+
+### Quick Test
+
+Test basic MCP connection:
 
 ```bash
 # Test MCP connection
