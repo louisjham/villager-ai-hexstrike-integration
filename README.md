@@ -13,18 +13,15 @@ This is just an idea to inspire others to test similiar things and contribute
 ## 🚀 Quick Start (Copy & Paste)
 
 ```bash
-# Complete setup in one go
+# Complete setup in one go - installs ALL dependencies automatically
 git clone https://github.com/Yenn503/villager-ai-hexstrike-integration.git
 cd villager-ai-hexstrike-integration
-python -m venv villager-venv-new
-source villager-venv-new/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-./tests/run_tests.sh
-./start_villager_proper.sh
+./setup.sh
 ```
 
-**That's it!** Your Villager AI framework is now running. See the [detailed installation guide](#-quick-start-complete-setup) below for step-by-step instructions.
+**That's it!** The setup script will automatically install Docker, Kali tools, Ollama, Python dependencies, and start all services. Your Villager AI framework will be fully operational.
+
+> **🎯 One-Command Setup**: The `setup.sh` script handles everything - no manual dependency installation needed!
 
 ##  What is Villager?
 
@@ -94,26 +91,22 @@ Villager works **alongside** HexStrike to provide a complete cybersecurity autom
 
 ### Prerequisites
 - **Python 3.8+**
-- **Docker** (for Kali containers)
+- **Docker** (for containerized security tools)
 - **Ollama** (for local AI model)
-- **Kali Linux Tools** (msfvenom, nmap, etc.)
 
-> **⚠️ First-time setup?** If tests fail on first install, check [SYSTEM_REQUIREMENTS.md](SYSTEM_REQUIREMENTS.md) for complete system dependencies.
+> **🎯 Containerized Security**: All security tools run inside Docker containers - no host installation needed!
 
 ## 🚀 Quick Start (Complete Setup)
 
-### **One-Command Installation**
+### **One-Command Installation (Recommended)**
 ```bash
-# Clone and setup everything
+# Clone and setup everything automatically
 git clone https://github.com/Yenn503/villager-ai-hexstrike-integration.git
 cd villager-ai-hexstrike-integration
-python -m venv villager-venv-new
-source villager-venv-new/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-./tests/run_tests.sh
-./start_villager_proper.sh
+./setup.sh
 ```
+
+> **🎯 Automated Setup**: The `setup.sh` script installs Docker, Kali tools, Ollama, Python dependencies, and starts all services automatically.
 
 ### **Step-by-Step Installation**
 
