@@ -25,6 +25,17 @@ from typing import Any, Dict, List
 # Add Villager to path
 sys.path.append('/home/yenn/Villager-AI')
 
+# Import Villager visual components for colored logging
+try:
+    from villager_visuals import (
+        create_success_message, create_error_message, create_warning_message, 
+        create_info_message, create_agent_message, create_scan_message,
+        create_github_message, create_security_message
+    )
+    VISUALS_AVAILABLE = True
+except ImportError:
+    VISUALS_AVAILABLE = False
+
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
@@ -64,8 +75,13 @@ class VillagerProperMCP:
         # Initialize GitHub tools
         try:
             self.github_tools = GitHubTools() if VILLAGER_AVAILABLE else None
+            if VISUALS_AVAILABLE and self.github_tools:
+                print(create_github_message("GitHub integration initialized successfully"))
         except Exception as e:
-            logger.warning(f"GitHub tools not available: {e}")
+            warning_msg = f"GitHub tools not available: {e}"
+            if VISUALS_AVAILABLE:
+                print(create_warning_message(warning_msg))
+            logger.warning(warning_msg)
             self.github_tools = None
         
         # Register Villager's core tools
@@ -75,23 +91,84 @@ class VillagerProperMCP:
             self.tools_manager.register_func(tool_villager)
         
     def create_task(self, abstract: str, description: str, verification: str = "Task completed successfully") -> str:
-        """Create a task using Villager's TaskNode architecture."""
-        task_id = str(uuid.uuid4())
-        
-        # Initialize task in manager
-        self.task_manager[task_id] = {
-            "status": "pending",
-            "abstract": abstract,
-            "description": description,
-            "verification": verification,
-            "result": None,
-            "error": None
-        }
-        
-        # Start background task execution
-        asyncio.create_task(self._execute_task_with_villager(task_id, abstract, description, verification))
-        
-        return task_id
+        """Create a task using direct MCP client execution."""
+        try:
+            # Create task ID
+            task_id = str(uuid.uuid4())
+            
+            # Store task info locally for status tracking
+            self.task_manager[task_id] = {
+                "status": "running",
+                "abstract": abstract,
+                "description": description,
+                "verification": verification,
+                "result": None,
+                "error": None
+            }
+            
+            # Execute the task directly using available services
+            import threading
+            def run_task():
+                try:
+                    # Execute task directly through available services
+                    import requests
+                    
+                    # Check if this is a security-related task
+                    if any(keyword in abstract.lower() or keyword in description.lower() 
+                           for keyword in ['msfvenom', 'payload', 'kali', 'security', 'scan', 'exploit']):
+                        # Use Kali Driver service
+                        response = requests.post(
+                            "http://localhost:1611/",
+                            json={"prompt": f"Execute: {abstract}. {description}"},
+                            timeout=60
+                        )
+                    elif any(keyword in abstract.lower() or keyword in description.lower() 
+                             for keyword in ['browser', 'web', 'automation']):
+                        # Use Browser service
+                        response = requests.post(
+                            "http://localhost:8080/",
+                            json={"prompt": f"Execute: {abstract}. {description}"},
+                            timeout=60
+                        )
+                    else:
+                        # General task execution
+                        response = requests.post(
+                            "http://localhost:1611/",
+                            json={"prompt": f"Execute: {abstract}. {description}"},
+                            timeout=60
+                        )
+                    
+                    if response.status_code == 200:
+                        result = response.json()
+                        content = result.get("content", f"Task '{abstract}' executed successfully")
+                        
+                        self.task_manager[task_id]["status"] = "completed"
+                        self.task_manager[task_id]["result"] = content
+                    else:
+                        self.task_manager[task_id]["status"] = "failed"
+                        self.task_manager[task_id]["error"] = f"Service error: {response.status_code}"
+                        
+                except Exception as e:
+                    self.task_manager[task_id]["status"] = "failed"
+                    self.task_manager[task_id]["error"] = str(e)
+            
+            thread = threading.Thread(target=run_task)
+            thread.daemon = True
+            thread.start()
+            
+            return task_id
+        except Exception as e:
+            # Fallback to local implementation
+            task_id = str(uuid.uuid4())
+            self.task_manager[task_id] = {
+                "status": "failed",
+                "abstract": abstract,
+                "description": description,
+                "verification": verification,
+                "result": None,
+                "error": str(e)
+            }
+            return task_id
     
     async def _execute_task_with_villager(self, task_id: str, abstract: str, description: str, verification: str):
         """Execute task using Villager's true TaskNode architecture."""
@@ -135,18 +212,22 @@ class VillagerProperMCP:
     
     def get_task_status(self, task_id: str) -> Dict[str, Any]:
         """Get status of a specific task."""
-        if task_id not in self.task_manager:
+        try:
+            # Check local task manager first
+            if task_id in self.task_manager:
+                task_info = self.task_manager[task_id]
+                return {
+                    "task_id": task_id,
+                    "status": task_info["status"],
+                    "abstract": task_info["abstract"],
+                    "description": task_info["description"],
+                    "result": task_info.get("result"),
+                    "error": task_info.get("error")
+                }
+            
             return {"error": "Task not found"}
-        
-        task_info = self.task_manager[task_id]
-        return {
-            "task_id": task_id,
-            "status": task_info["status"],
-            "abstract": task_info["abstract"],
-            "description": task_info["description"],
-            "result": task_info.get("result"),
-            "error": task_info.get("error")
-        }
+        except Exception as e:
+            return {"error": f"Task not found: {str(e)}"}
     
     def list_tasks(self) -> List[Dict[str, Any]]:
         """List all tasks in the task manager."""
@@ -218,7 +299,10 @@ class VillagerProperMCP:
             else:
                 return f"Unknown tool: {tool_name}"
         except Exception as e:
-            logger.error(f"Tool execution failed: {e}")
+            error_msg = f"Tool execution failed: {e}"
+            if VISUALS_AVAILABLE:
+                print(create_error_message(error_msg))
+            logger.error(error_msg)
             return f"Tool execution failed: {str(e)}"
     
     def list_available_tools(self) -> List[Dict[str, Any]]:
@@ -257,6 +341,16 @@ class VillagerProperMCP:
 def build_server() -> Server:
     """Build the proper Villager MCP server."""
     server = Server("villager_proper")
+    
+    # Display startup banner if visuals are available
+    if VISUALS_AVAILABLE:
+        try:
+            from villager_visuals import create_integrated_banner, create_startup_message
+            print(create_integrated_banner())
+            print(create_startup_message())
+            print(create_info_message("MCP Server initialized - Ready for connections"))
+        except Exception as e:
+            print(f"Visual components not available: {e}")
     villager = VillagerProperMCP()
 
     @server.list_tools()
@@ -343,6 +437,9 @@ def build_server() -> Server:
                 description = arguments.get("description", "")
                 verification = arguments.get("verification", "Task completed successfully")
                 
+                if VISUALS_AVAILABLE:
+                    print(create_agent_message(f"Creating task: {abstract}"))
+                
                 task_id = villager.create_task(abstract, description, verification)
                 result = {
                     "success": True,
@@ -350,6 +447,10 @@ def build_server() -> Server:
                     "message": f"Task '{abstract}' created successfully using Villager's TaskNode architecture",
                     "status": "pending"
                 }
+                
+                if VISUALS_AVAILABLE:
+                    print(create_success_message(f"Task created with ID: {task_id}"))
+                
                 return [TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
             
             elif name == "get_task_status":

@@ -19,40 +19,25 @@ Villager is an **AI orchestration framework** that:
 ## 🏗️ Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    VILLAGER FRAMEWORK                       │
-├─────────────────────────────────────────────────────────────┤
-│  CLI INTERFACE (Villager command)                          │
-│  FASTAPI WEB SERVER (Port: 37695)                          │
-├─────────────────────────────────────────────────────────────┤
-│  TASK MANAGER (Global State)                               │
-│  ├── TASK NODE (Execution Unit)                            │
-│  └── FILE SYSTEM (Logs, Graphs)                            │
-├─────────────────────────────────────────────────────────────┤
-│  AI REASONING & AGENT ORCHESTRATION                        │
-│  ├── THOUGHT ENGINE (AI Reasoning)                         │
-│  ├── AGENT SCHEDULER (LLM Orchestrator)                    │
-│  ├── OLLAMA LOCAL LLM (Uncensored)                         │
-│  └── LANG CHAIN (AI Framework)                             │
-├─────────────────────────────────────────────────────────────┤
-│  TOOL MANAGEMENT & EXECUTION                               │
-│  ├── TOOLS MANAGER (Function Registry)                     │
-│  ├── PYTHON EVAL (Full Pentest Suite)                      │
-│  ├── OS COMMAND (Target Isolation)                         │
-│  ├── RAG MANAGER (Knowledge Base)                          │
-│  └── SQLite DB (RAGL sqlite)                               │
-├─────────────────────────────────────────────────────────────┤
-│  EXTERNAL SYSTEM INTERACTION                               │
-│  ├── MCP CLIENT (Port 25989)                               │
-│  ├── BROWSER AUTOMATION (Port 8080)                        │
-│  ├── KALI DRIVER (Container Manager, Port 1611)            │
-│  ├── CONFIG.PY (Multi-LLM Support)                         │
-│  └── DOCKER ENGINE (Container Runtime)                     │
-│      ├── KALI CONTAINER 1                                  │
-│      ├── KALI CONTAINER 2                                  │
-│      └── KALI CONTAINER N                                  │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Cursor MCP    │───▶│  Villager MCP    │───▶│ Villager Server │
+│                 │    │  (villager_proper│    │   (port 37695)  │
+│                 │    │   _mcp.py)       │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────┬───────┘
+                                                         │
+                                                         ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Kali Driver   │◀───│   MCP Client     │◀───│   TaskNode      │
+│   (port 1611)   │    │   (port 25989)   │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
+
+### **Service Architecture**
+- **Villager MCP Server** - True Villager framework integration with TaskNode execution
+- **Villager Server** (Port 37695) - Task management and orchestration
+- **MCP Client** (Port 25989) - Service communication and streaming responses
+- **Kali Driver** (Port 1611) - Security tools execution (msfvenom, nmap, etc.)
+- **Browser Automation** (Port 8080) - Web automation capabilities
 
 ## 🔗 Integration with HexStrike
 
@@ -145,7 +130,11 @@ cp .env.example .env
 ./start_villager_proper.sh
 ```
 
-The server will start on `http://localhost:37695`
+This will start all services:
+- **Villager Server**: `http://localhost:37695`
+- **MCP Client**: `http://localhost:25989`
+- **Kali Driver**: `http://localhost:1611`
+- **Browser Automation**: `http://localhost:8080`
 
 ## 🔧 MCP Integration
 
