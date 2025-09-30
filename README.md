@@ -289,6 +289,25 @@ print(villager.get_system_status())
 "
 ```
 
+## 📦 Dependencies
+
+### Core Requirements
+- **`requirements.txt`** - All dependencies needed to run Villager AI Framework
+
+### Key Dependencies
+- **Villager Framework** - Core AI orchestration framework
+- **MCP (Model Context Protocol)** - AI assistant integration
+- **FastAPI & Uvicorn** - Web server and API framework
+- **OpenAI & LangChain** - AI model integration
+- **Pydantic** - Data validation and settings management
+- **Requests & HTTPX** - HTTP client libraries
+
+### Installation
+```bash
+# Install all dependencies
+pip install -r requirements.txt
+```
+
 ## 📚 Documentation
 
 All documentation is organized in the [`docs/`](docs/) directory:
