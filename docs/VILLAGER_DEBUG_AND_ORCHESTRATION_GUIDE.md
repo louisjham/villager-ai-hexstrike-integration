@@ -12,9 +12,9 @@
 {
   "mcpServers": {
     "villager": {
-      "command": "/home/yenn/Villager-AI/villager-venv-new/bin/python3",
+      "command": "/path/to/your/Villager-AI/villager-venv-new/bin/python3",
       "args": [
-        "/home/yenn/Villager-AI/mcp/villager_http_mcp.py",
+        "/path/to/your/Villager-AI/mcp/villager_http_mcp.py",
         "--server",
         "http://127.0.0.1:37695"
       ],
@@ -23,13 +23,13 @@
       "alwaysAllow": [],
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "/home/yenn/Villager-AI"
+        "PYTHONPATH": "/path/to/your/Villager-AI"
       }
     },
     "hexstrike-ai": {
-      "command": "/home/yenn/hexstrike-ai/hexstrike-env/bin/python3",
+      "command": "/path/to/your/hexstrike-ai/hexstrike-env/bin/python3",
       "args": [
-        "/home/yenn/hexstrike-ai/hexstrike_mcp.py",
+        "/path/to/your/hexstrike-ai/hexstrike_mcp.py",
         "--server",
         "http://localhost:8000",
         "--debug"
@@ -55,7 +55,7 @@
 # Villager HTTP MCP Server
 export VILLAGER_DEBUG=1
 export PYTHONUNBUFFERED=1
-export PYTHONPATH=/home/yenn/Villager-AI
+export PYTHONPATH=/path/to/your/Villager-AI
 
 # Start with verbose logging
 python mcp/villager_http_mcp.py --server http://127.0.0.1:37695
@@ -222,12 +222,12 @@ mcp_villager_create_agent(
 1. **Start Servers**:
    ```bash
    # Terminal 1: HexStrike
-   cd /home/yenn/hexstrike-ai
+   cd /path/to/your/hexstrike-ai
    source hexstrike-env/bin/activate
    python hexstrike_server.py --port 8000 --debug
    
    # Terminal 2: Villager
-   cd /home/yenn/Villager-AI
+   cd /path/to/your/Villager-AI
    source villager-venv-new/bin/activate
    python villager_server.py
    ```

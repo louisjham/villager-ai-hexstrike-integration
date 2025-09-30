@@ -3,15 +3,22 @@
 ## 🚨 CRITICAL: Use Villager MCP Tools (Now Available!)
 
 **IMPORTANT**: When working with Villager-AI, AI assistants should use:
-1. **Villager MCP tools** - `mcp_villager_create_agent`, `mcp_villager_list_agents`, etc. (NOW AVAILABLE!)
+1. **Villager MCP tools** - `mcp_villager-proper_*` tools for true Villager architecture
 2. **Fallback**: HexStrike MCP tools - `mcp_hexstrike-ai_execute_python_script` for HTTP API calls
 3. **NEVER** use direct terminal commands like `curl`, `python`, or shell scripts
 
-**✅ UPDATE**: Villager MCP tools are now working after tool optimization! You can use:
-- `mcp_villager_create_agent(name, task)` - Create custom autonomous agents
-- `mcp_villager_list_agents()` - List all active agents
-- `mcp_villager_get_status()` - Get server status
-- And other Villager MCP tools
+**✅ CURRENT SETUP**: Villager is now running with:
+- **Uncensored AI Model**: DeepSeek R1 uncensored via Ollama (100% free)
+- **True Villager Architecture**: TaskNode + MCP Client + Agent Scheduler
+- **Real Security Tools**: MSFVenom, Nmap, SQLMap, and all Kali Linux tools
+- **GitHub Integration**: Tools for repository management and tool discovery
+
+**Available MCP Tools**:
+- `mcp_villager-proper_create_task(abstract, description, verification)` - Create tasks using TaskNode
+- `mcp_villager-proper_schedule_agent(agent_name, task_input)` - Schedule agents with LLM orchestration
+- `mcp_villager-proper_execute_tool(tool_name, parameters)` - Execute Villager's core tools (pyeval, os_execute_cmd, tool_villager, github_tools)
+- `mcp_villager-proper_get_system_status()` - Get comprehensive system status
+- `mcp_villager-proper_list_available_tools()` - List available tools
 
 **Framework Approach**: Villager-AI is a flexible agent framework. You create custom agents by defining their name and detailed task description - no predefined agent types!
 
@@ -21,21 +28,21 @@ Before using Villager, you MUST start these servers:
 
 ### 1. Start Villager Server
 ```bash
-cd /home/yenn/Villager-AI
+cd /path/to/your/Villager-AI
 source villager-venv-new/bin/activate
 python villager_server.py &
 ```
 
 ### 2. Start HexStrike Server
 ```bash
-cd /home/yenn/hexstrike-ai
+cd /path/to/your/hexstrike-ai
 source hexstrike-env/bin/activate
 python hexstrike_server.py --port 8000 --debug &
 ```
 
 ### 3. Start HexStrike MCP Client (CRITICAL)
 ```bash
-cd /home/yenn/hexstrike-ai
+cd /path/to/your/hexstrike-ai
 source hexstrike-env/bin/activate
 python hexstrike_mcp.py --server http://localhost:8000 --debug &
 ```
@@ -518,6 +525,37 @@ with urllib.request.urlopen(req, timeout=30) as response:
 )
 ```
 
+## 🔧 GitHub Integration
+
+Villager includes comprehensive GitHub integration for repository management and tool discovery:
+
+### GitHub Tools Available
+```python
+# Execute GitHub tools through Villager
+mcp_villager-proper_execute_tool(
+    tool_name="github_tools",
+    parameters={
+        "method": "get_repo_info",
+        "owner": "organization",
+        "repo": "repository-name"
+    }
+)
+```
+
+### Available GitHub Methods
+- `get_repo_info(owner, repo)` - Get repository information
+- `list_repos(org)` - List organization repositories
+- `create_issue(owner, repo, title, body)` - Create GitHub issues
+- `search_repos(query)` - Search for repositories
+- `get_file_content(owner, repo, path)` - Get file contents
+- `create_pull_request(owner, repo, title, head, base, body)` - Create pull requests
+
+### GitHub Authentication
+Set your GitHub token as an environment variable:
+```bash
+export GITHUB_TOKEN="your-github-token-here"
+```
+
 ## 🔧 Integration with HexStrike Tools
 
 The Villager agents can leverage the full HexStrike toolkit (150+ security tools) through the MCP system:
@@ -561,7 +599,7 @@ These tools provide a cleaner API than the current `execute_python_script` appro
 
 2. **Start the HexStrike MCP client:**
    ```bash
-   cd /home/yenn/hexstrike-ai
+   cd /path/to/your/hexstrike-ai
    source hexstrike-env/bin/activate
    python hexstrike_mcp.py --server http://localhost:8000 --debug &
    ```
