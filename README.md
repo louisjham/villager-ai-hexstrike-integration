@@ -10,7 +10,7 @@ Before implementing this current hybrid setup follow the instructions on https:/
 
 This is just an idea to inspire others to test similiar things and contribute 
 
-## 🎯 What is Villager?
+##  What is Villager?
 
 Villager is an **AI orchestration framework** that:
 - **Decomposes complex security tasks** into manageable subtasks using AI reasoning
@@ -18,7 +18,7 @@ Villager is an **AI orchestration framework** that:
 - **Integrates with security tools** through containerized environments
 - **Provides MCP integration** for seamless tool access and automation
 
-## 🏗️ Architecture Overview
+##  Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -79,7 +79,7 @@ Villager works **alongside** HexStrike to provide a complete cybersecurity autom
 4. **HexStrike** provides the actual security tools and execution capabilities
 5. **Villager** coordinates the results and generates comprehensive reports
 
-## 🚀 Key Features
+##  Key Features
 
 - **🤖 AI-Driven Operations**: Intelligent task decomposition and agent orchestration
 - **🔧 True Architecture**: Implements proper Villager framework with TaskNode execution
@@ -177,7 +177,7 @@ Configure Villager in your MCP client (e.g., Cursor IDE):
 }
 ```
 
-## 🛠️ Available MCP Tools
+##  Available MCP Tools
 
 ### Task Management
 - `mcp_villager-proper_create_task(abstract, description, verification)` - Create AI-driven tasks
@@ -198,7 +198,7 @@ Configure Villager in your MCP client (e.g., Cursor IDE):
 - `mcp_villager-proper_get_system_status()` - Get comprehensive system status
 - `mcp_villager-proper_list_available_tools()` - List all available tools
 
-## 🎯 Usage Examples
+##  Usage Examples
 
 ### Creating a Security Assessment Task
 ```python
@@ -227,7 +227,7 @@ result = mcp_villager-proper_execute_tool(
 )
 ```
 
-## 🔒 Security Features
+##  Security Features
 
 - **🛡️ Containerized Execution**: All security tools run in isolated Kali Linux containers
 - **🧠 AI Task Decomposition**: Automatically breaks down complex operations into manageable steps
