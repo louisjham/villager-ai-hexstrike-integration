@@ -22,6 +22,21 @@ fi
 echo "🔧 Activating Villager virtual environment..."
 source villager-venv-new/bin/activate
 
+# Load environment variables
+if [ -f ".env" ]; then
+    echo "🔧 Loading environment variables..."
+    set -a  # Automatically export all variables
+    source .env
+    set +a  # Turn off automatic export
+    echo "✅ Environment variables loaded"
+else
+    echo "⚠️  Warning: .env file not found"
+    echo "   Copy .env.example to .env and configure it:"
+    echo "   cp .env.example .env"
+    echo "   # Then edit .env with your settings"
+    echo "   Using default environment variables"
+fi
+
 # Check LLM provider configuration
 if [ -z "$LLM_PROVIDER" ]; then
     export LLM_PROVIDER="ollama"
