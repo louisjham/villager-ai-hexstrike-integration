@@ -1,5 +1,3 @@
-# 🏘️ Villager AI Framework
-
 <div align="center">
   <img src="VillagerXHexstrike.png" alt="Villager AI Framework" width="600" />
 </div>
@@ -8,7 +6,11 @@
 
 Villager is a powerful AI framework that orchestrates cybersecurity operations through intelligent task decomposition, agent scheduling, and seamless integration with security tools. It implements the true Villager architecture with TaskNode execution, MCP Client integration, and containerized Kali Linux environments.
 
-## 🎯 What is Villager?
+Before implementing this current hybrid setup follow the instructions on https://github.com/0x4m4/hexstrike-ai and make sure its configured with your chosen enviroment. Currently i have only tested this using cursor AI and using a local uncensored deepseek model to orchestrate the villager workflow. I hope this enhances everyones automation capabilties and we can solve the long task completion issue people face when running very long assesments. Villager should be able to handle and batch it intelligently avoiding exhaustion of the cursor model on its own. 
+
+This is just an idea to inspire others to test similiar things and contribute 
+
+##  What is Villager?
 
 Villager is an **AI orchestration framework** that:
 - **Decomposes complex security tasks** into manageable subtasks using AI reasoning
@@ -16,7 +18,7 @@ Villager is an **AI orchestration framework** that:
 - **Integrates with security tools** through containerized environments
 - **Provides MCP integration** for seamless tool access and automation
 
-## 🏗️ Architecture Overview
+##  Architecture Overview
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -62,7 +64,7 @@ Villager works **alongside** HexStrike to provide a complete cybersecurity autom
 4. **HexStrike** provides the actual security tools and execution capabilities
 5. **Villager** coordinates the results and generates comprehensive reports
 
-## 🚀 Key Features
+##  Key Features
 
 - **🤖 AI-Driven Operations**: Intelligent task decomposition and agent orchestration
 - **🔧 True Architecture**: Implements proper Villager framework with TaskNode execution
@@ -164,7 +166,7 @@ Configure Villager in your MCP client (e.g., Cursor IDE):
 }
 ```
 
-## 🛠️ Available MCP Tools
+##  Available MCP Tools
 
 ### Task Management
 - `mcp_villager-proper_create_task(abstract, description, verification)` - Create AI-driven tasks
@@ -185,7 +187,7 @@ Configure Villager in your MCP client (e.g., Cursor IDE):
 - `mcp_villager-proper_get_system_status()` - Get comprehensive system status
 - `mcp_villager-proper_list_available_tools()` - List all available tools
 
-## 🎯 Usage Examples
+##  Usage Examples
 
 ### Creating a Security Assessment Task
 ```python
@@ -214,7 +216,7 @@ result = mcp_villager-proper_execute_tool(
 )
 ```
 
-## 🔒 Security Features
+##  Security Features
 
 - **🛡️ Containerized Execution**: All security tools run in isolated Kali Linux containers
 - **🧠 AI Task Decomposition**: Automatically breaks down complex operations into manageable steps
