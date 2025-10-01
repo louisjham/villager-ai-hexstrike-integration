@@ -3,7 +3,7 @@
 # Test Villager Setup Script
 # This script verifies that Villager AI works correctly with Kali containers
 
-echo "🧪 Testing Villager Setup for Villager AI"
+echo "🧪 Testing Setup for Villager AI"
 echo "=========================================="
 
 # Colors for output

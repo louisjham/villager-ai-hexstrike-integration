@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏘️ Villager AI Framework
+#  Villager AI Framework
 
 <img src="VillagerXHexstrike.png" alt="Villager AI Framework" width="600" />
 
@@ -9,17 +9,19 @@
 [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
 [![AI Powered](https://img.shields.io/badge/AI-Powered-green.svg)](https://github.com/Yenn503/villager-ai-hexstrike-integration)
 
-**🤖 AI-Driven Cybersecurity Automation Platform**
+** AI-Driven Cybersecurity Automation Platform**
 
 </div>
 
 ---
 
-## 🌟 About Villager AI + HexStrike
+##  About Villager AI + HexStrike
 
 **Villager AI** and **HexStrike** are both powerful cybersecurity tools that work under the control of your AI model (like Cursor). Your AI can intelligently choose between them based on task complexity: **HexStrike** for fast, direct tool execution (quick tests, single commands, immediate results) and **Villager AI** for complex, orchestrated operations using its own framework and uncensored models like DeepSeek. This gives you the flexibility to use HexStrike's 150+ tools for rapid testing or Villager's advanced AI orchestration for sophisticated multi-step security assessments.
 
 By heading over to hexstrikes github repo and following there instructions to set up with your chosen enviroment 
+
+https://github.com/0x4m4/hexstrike-ai
 
 **Key Features:**
 - 🤖 **AI Model Control** - Both tools controlled by your AI (Cursor, etc.)
