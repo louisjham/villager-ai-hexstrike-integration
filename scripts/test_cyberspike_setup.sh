@@ -62,6 +62,7 @@ fi
 echo -e "\n${BLUE}2. Testing Cyberspike Registry Access${NC}"
 echo "------------------------------------"
 
+print_status "INFO" "Checking Cyberspike registry access..."
 if timeout 10 ping -c 1 gitlab.cyberspike.top > /dev/null 2>&1; then
     print_status "OK" "Cyberspike registry is reachable"
     
@@ -71,11 +72,11 @@ if timeout 10 ping -c 1 gitlab.cyberspike.top > /dev/null 2>&1; then
         print_status "OK" "Cyberspike image pulled successfully"
         cyberspike_available=true
     else
-        print_status "WARN" "Cyberspike image pull failed (this is normal)"
+        print_status "WARN" "Cyberspike image pull failed (registry blocked - using standard Kali)"
         cyberspike_available=false
     fi
 else
-    print_status "WARN" "Cyberspike registry is not reachable (this is normal)"
+    print_status "WARN" "Cyberspike registry is blocked/unreachable (using standard Kali - this is normal)"
     cyberspike_available=false
 fi
 
@@ -131,11 +132,12 @@ if [ "$cyberspike_available" = true ]; then
     echo "   - Custom Kali image with optimized tools is available"
     echo "   - All Villager AI features are fully functional"
 else
-    print_status "OK" "Fallback system is working perfectly!"
-    echo "   - Standard Kali image is being used (this is normal)"
+    print_status "OK" "Standard Kali system is working perfectly!"
+    echo "   - Standard Kali image is being used (primary method)"
     echo "   - All security tools are automatically installed"
     echo "   - All Villager AI features are fully functional"
     echo "   - No additional setup required"
+    echo "   - Cyberspike registry is blocked (this is normal)"
 fi
 
 echo -e "\n${GREEN}🎉 Villager AI is ready to use!${NC}"

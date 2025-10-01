@@ -7,34 +7,34 @@ Villager AI includes integration with Cyberspike's custom Kali Docker image, whi
 ## Current Status
 
 ### ✅ What's Working
-- **Fallback System**: Automatically uses standard Kali image when Cyberspike is unavailable
+- **Standard Kali Image**: Primary method using `kalilinux/kali-rolling`
 - **Tool Installation**: All security tools (nmap, msfvenom, gobuster, etc.) are automatically installed
 - **SSH Access**: Secure SSH-based command execution
 - **24-hour Persistence**: Containers persist for 24 hours with automatic cleanup
-- **Full Functionality**: All Villager features work with standard Kali image
+- **Full Functionality**: All Villager features work perfectly with standard Kali
 
-### ⚠️ Cyberspike Registry Access
-The Cyberspike registry (`gitlab.cyberspike.top:5050`) may not be accessible due to:
-- Network restrictions
-- Authentication requirements
-- Registry availability
+### ⚠️ Cyberspike Registry Status
+The Cyberspike registry (`gitlab.cyberspike.top:5050`) is currently **not accessible** due to:
+- Network restrictions/blocking
+- Private registry access requirements
+- Geographic or authentication limitations
 
 ## Setup Options
 
-### Option 1: Use Standard Kali (Recommended for Most Users)
-The system automatically falls back to the standard Kali image, which provides:
-- All essential security tools
-- Automatic tool installation
+### ✅ Standard Kali Image (Primary Method)
+The system uses the standard Kali image by default, which provides:
+- All essential security tools (nmap, msfvenom, gobuster, nikto, sqlmap, hydra, john, hashcat)
+- Automatic tool installation during container startup
 - Full Villager functionality
 - No additional setup required
+- Reliable and always accessible
 
-### Option 2: Configure Cyberspike Access (Advanced Users)
-
-If you have access to the Cyberspike registry, you can configure it:
+### ⚠️ Cyberspike Access (Currently Unavailable)
+The Cyberspike registry is currently blocked/unreachable. If access becomes available in the future:
 
 1. **Network Access**: Ensure your network can reach `gitlab.cyberspike.top:5050`
-2. **Authentication**: You may need to configure Docker authentication
-3. **Registry Configuration**: Add registry credentials if required
+2. **Authentication**: Configure Docker authentication if required
+3. **Registry Configuration**: Add registry credentials if needed
 
 #### Docker Login (if authentication is required)
 ```bash
@@ -122,7 +122,7 @@ export FORCE_STANDARD_KALI=true
 
 ## Conclusion
 
-The Villager AI framework is designed to work seamlessly regardless of Cyberspike registry availability. The automatic fallback system ensures that all users can enjoy full functionality with the standard Kali image, while advanced users can configure Cyberspike access if available.
+The Villager AI framework is designed to work seamlessly with the standard Kali image, which provides all necessary functionality. The system is optimized for reliability and accessibility, ensuring that all users can enjoy full functionality without any additional setup.
 
-**For most users**: No additional setup is required - everything works out of the box!
-**For advanced users**: Follow the Cyberspike configuration steps above.
+**For all users**: No additional setup is required - everything works out of the box with the standard Kali image!
+**For future Cyberspike access**: The system will automatically detect and use Cyberspike if it becomes available.
