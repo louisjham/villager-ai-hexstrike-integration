@@ -25,9 +25,8 @@ This guide helps you resolve common issues with the Villager AI framework.
       "env": {
         "PYTHONUNBUFFERED": "1",
         "PYTHONPATH": "/path/to/your/Villager-AI",
-        "LLM_PROVIDER": "ollama",
-        "OLLAMA_BASE_URL": "http://localhost:11434",
-        "OLLAMA_MODEL": "deepseek-r1-uncensored"
+        "LLM_PROVIDER": "deepseek",
+        "DEEPSEEK_API_KEY": "your-api-key-here"
       }
     },
     "hexstrike-ai": {
@@ -49,7 +48,8 @@ This guide helps you resolve common issues with the Villager AI framework.
 **Key Points**:
 1. **Villager comes FIRST** - Ensures Cursor loads Villager tools before hitting tool limits
 2. **PYTHONPATH is set** - Points to Villager repo root for proper module resolution
-3. **Correct paths** - Use actual paths to your installations
+3. **Cloud LLM first** - Uses DeepSeek API by default (no local RAM required)
+4. **Correct paths** - Use actual paths to your installations
 
 ## 🔍 Common Issues and Solutions
 

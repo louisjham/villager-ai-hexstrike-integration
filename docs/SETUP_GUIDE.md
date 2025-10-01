@@ -16,12 +16,59 @@ cd villager-ai-hexstrike-integration
 
 **That's it!** Both Villager AI and HexStrike ready for your AI model to use.
 
+## 🔧 MCP Configuration (Required)
+
+**Important**: Configure MCP before starting services to ensure tools are available in Cursor.
+
+Add this to your `mcp_servers.json`:
+
+```json
+{
+  "mcpServers": {
+    "villager-proper": {
+      "command": "/path/to/your/Villager-AI/villager-venv-new/bin/python3",
+      "args": [
+        "/path/to/your/Villager-AI/src/villager_ai/mcp/villager_proper_mcp.py",
+        "--debug"
+      ],
+      "description": "Villager AI Framework - AI-Driven Cybersecurity Automation",
+      "timeout": 300,
+      "alwaysAllow": [],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "/path/to/your/Villager-AI",
+        "LLM_PROVIDER": "deepseek",
+        "DEEPSEEK_API_KEY": "your-api-key-here"
+      }
+    },
+    "hexstrike-ai": {
+      "command": "/path/to/your/hexstrike-ai/hexstrike-env/bin/python3",
+      "args": [
+        "/path/to/your/hexstrike-ai/hexstrike_mcp.py",
+        "--server",
+        "http://localhost:8000",
+        "--debug"
+      ],
+      "description": "HexStrike AI - Advanced Cybersecurity Tools",
+      "timeout": 300,
+      "alwaysAllow": []
+    }
+  }
+}
+```
+
+**Key Points**:
+1. **Villager comes FIRST** - Ensures Cursor loads Villager tools before hitting tool limits
+2. **Replace paths** - Use actual paths to your installations
+3. **Cloud LLM first** - Uses DeepSeek API by default (no local RAM required)
+
 ## 🔧 Manual Setup
 
 ### Prerequisites
 - **Python 3.8+** (3.13 recommended)
 - **Docker** (for containerized security tools)
-- **Ollama** (for local AI models)
+- **API Key** (for cloud AI models - recommended)
+- **Ollama** (optional - for local AI models)
 
 ### Step 1: System Dependencies
 ```bash
@@ -33,10 +80,10 @@ sudo usermod -aG docker $USER
 # Install Kali tools
 sudo apt install -y kali-linux-everything
 
-# Install Ollama
-curl -fsSL https://ollama.ai/install.sh | sh
-ollama pull deepseek-r1-uncensored
-ollama serve &
+# Optional: Install Ollama for local AI models
+# curl -fsSL https://ollama.ai/install.sh | sh
+# ollama pull deepseek-r1-uncensored
+# ollama serve &
 ```
 
 ### Step 2: Python Setup
@@ -64,35 +111,33 @@ curl http://localhost:1611/health   # Kali Driver
 curl http://localhost:8080/health   # Browser Service
 ```
 
-## 🔧 MCP Configuration
+## 🔧 LLM Configuration
 
-Add this to your `mcp_servers.json`:
+### Option 1: Cloud LLM (Recommended - No RAM Required)
 
-```json
-{
-  "mcpServers": {
-    "villager-proper": {
-      "command": "/path/to/your/Villager-AI/villager-venv-new/bin/python3",
-      "args": [
-        "/path/to/your/Villager-AI/src/villager_ai/mcp/villager_proper_mcp.py",
-        "--debug"
-      ],
-      "description": "Villager AI Framework - AI-Driven Cybersecurity Automation",
-      "timeout": 300,
-      "alwaysAllow": [],
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "/path/to/your/Villager-AI",
-        "LLM_PROVIDER": "ollama",
-        "OLLAMA_BASE_URL": "http://localhost:11434",
-        "OLLAMA_MODEL": "deepseek-r1-uncensored"
-      }
-    }
-  }
-}
+```bash
+# Set environment variables for cloud AI
+export LLM_PROVIDER="deepseek"
+export DEEPSEEK_API_KEY="your-api-key-here"
+
+# Alternative: OpenAI
+# export LLM_PROVIDER="openai"
+# export OPENAI_API_KEY="your-api-key-here"
 ```
 
-**Important**: Replace `/path/to/your/Villager-AI` with your actual installation path.
+### Option 2: Local Ollama (High RAM Required)
+
+```bash
+# Install and start Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
+ollama pull deepseek-r1-uncensored
+ollama serve &
+
+# Set environment variables
+export LLM_PROVIDER="ollama"
+export OLLAMA_BASE_URL="http://localhost:11434"
+export OLLAMA_MODEL="deepseek-r1-uncensored"
+```
 
 ## 🎯 Service Architecture
 
@@ -103,23 +148,22 @@ Add this to your `mcp_servers.json`:
 | Kali Driver | 1611 | Security tools execution |
 | Browser Automation | 8080 | Web automation capabilities |
 
-## 🔧 Configuration Options
-
-### LLM Providers
-- **Ollama (Recommended)**: Free, local, uncensored AI
-- **DeepSeek API**: Cloud-based AI with API key
-- **OpenAI API**: Cloud-based AI with API key
+## 🔧 Additional Configuration
 
 ### Environment Variables
 ```bash
-# LLM Configuration (Local Ollama - Recommended)
-export LLM_PROVIDER="ollama"
-export OLLAMA_BASE_URL="http://localhost:11434"
-export OLLAMA_MODEL="deepseek-r1-uncensored"
-
-# Alternative: API-based LLM
+# Cloud LLM Configuration (Recommended)
 export LLM_PROVIDER="deepseek"
 export DEEPSEEK_API_KEY="your-api-key-here"
+
+# Alternative: OpenAI
+# export LLM_PROVIDER="openai"
+# export OPENAI_API_KEY="your-api-key-here"
+
+# Local Ollama (High RAM Required)
+# export LLM_PROVIDER="ollama"
+# export OLLAMA_BASE_URL="http://localhost:11434"
+# export OLLAMA_MODEL="deepseek-r1-uncensored"
 
 # Optional: GitHub Integration
 export GITHUB_TOKEN="your-github-token-here"

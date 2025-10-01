@@ -19,6 +19,8 @@
 
 **Villager AI** and **HexStrike** are both powerful cybersecurity tools that work under the control of your AI model (like Cursor). Your AI can intelligently choose between them based on task complexity: **HexStrike** for fast, direct tool execution (quick tests, single commands, immediate results) and **Villager AI** for complex, orchestrated operations using its own framework and uncensored models like DeepSeek. This gives you the flexibility to use HexStrike's 150+ tools for rapid testing or Villager's advanced AI orchestration for sophisticated multi-step security assessments.
 
+By heading over to hexstrikes github repo and following there instructions to set up with your chosen enviroment 
+
 **Key Features:**
 - 🤖 **AI Model Control** - Both tools controlled by your AI (Cursor, etc.)
 - ⚡ **Fast Execution** - HexStrike for quick tests and direct tool access
@@ -48,9 +50,17 @@ cd villager-ai-hexstrike-integration
 
 ---
 
-## 🔧 MCP Integration
+## 🔧 MCP Configuration (Required)
 
-Configure your MCP client to use Villager AI. See the [Setup Guide](docs/SETUP_GUIDE.md) for detailed MCP configuration instructions.
+**Important**: Configure MCP before using the tools. See the [Setup Guide](docs/SETUP_GUIDE.md) for complete MCP configuration.
+
+**Quick MCP Setup**:
+1. Add Villager AI and HexStrike to your `mcp_servers.json`
+2. **Villager comes FIRST** to ensure tools load properly
+3. Use **cloud LLM** (DeepSeek API) for best performance
+4. Restart Cursor to load the tools
+
+**Cloud LLM Recommended**: No local RAM required, just an API key!
 
 ---
 

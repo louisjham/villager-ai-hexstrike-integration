@@ -282,7 +282,7 @@ display_final_instructions() {
     echo ""
     echo "⚠️  Important Notes:"
     echo "   • You may need to log out and back in for Docker group changes"
-    echo "   • Ollama is running in the background"
+    echo "   • Configure MCP with cloud LLM (DeepSeek API recommended)"
     echo "   • All services are now running"
     echo "   • Cyberspike image integration with automatic fallback"
     echo ""
@@ -314,7 +314,7 @@ main() {
     install_system_packages
     install_docker
     setup_kali_container
-    install_ollama
+    # install_ollama  # Commented out - use cloud LLM instead (no RAM required)
     setup_python_environment
     configure_environment
     
