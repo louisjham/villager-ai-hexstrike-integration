@@ -1,13 +1,12 @@
 #!/bin/bash
 
 # Proper Villager Framework Startup Script
-# This script starts Villager using its true architecture as shown in the diagram
 
 # Import visual components
-source villager_visuals.py 2>/dev/null || python3 -c "
+source src/villager_ai/villager_visuals.py 2>/dev/null || python3 -c "
 import sys
 sys.path.append('.')
-from villager_visuals import create_integrated_banner, create_startup_message, create_server_info
+from src.villager_ai.villager_visuals import create_integrated_banner, create_startup_message, create_server_info
 print(create_integrated_banner())
 print(create_startup_message())
 "
@@ -102,7 +101,7 @@ check_port() {
 # Start MCP Client service if not running
 if ! check_port 25989; then
     echo "🔧 Starting MCP Client service on port 25989..."
-    python services/mcp_service.py > logs/mcp_client.log 2>&1 &
+    python src/villager_ai/services/mcp_service.py > logs/mcp_client.log 2>&1 &
     MCP_CLIENT_PID=$!
     echo "📊 MCP Client started with PID: $MCP_CLIENT_PID"
     
@@ -124,7 +123,7 @@ fi
 # Start Kali Driver service if not running
 if ! check_port 1611; then
     echo "🔧 Starting Kali Driver service on port 1611..."
-    python services/kali_driver_service.py > logs/kali_driver.log 2>&1 &
+    python src/villager_ai/services/kali_driver_service.py > logs/kali_driver.log 2>&1 &
     KALI_DRIVER_PID=$!
     echo "📊 Kali Driver started with PID: $KALI_DRIVER_PID"
     
@@ -146,7 +145,7 @@ fi
 # Start Browser Automation service if not running
 if ! check_port 8080; then
     echo "🔧 Starting Browser Automation service on port 8080..."
-    python services/browser_service.py > logs/browser_automation.log 2>&1 &
+    python src/villager_ai/services/browser_service.py > logs/browser_automation.log 2>&1 &
     BROWSER_PID=$!
     echo "📊 Browser Automation started with PID: $BROWSER_PID"
     
@@ -176,7 +175,7 @@ echo ""
 if ! check_port 37695; then
     echo "🔧 Starting Villager server on port 37695..."
     # Use the simplified server that actually works
-    python services/villager_server_simple.py > logs/villager_server.log 2>&1 &
+    python src/villager_ai/services/villager_server_simple.py > logs/villager_server.log 2>&1 &
     VILLAGER_SERVER_PID=$!
     echo "📊 Villager server started with PID: $VILLAGER_SERVER_PID"
     

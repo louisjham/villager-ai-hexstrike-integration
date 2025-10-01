@@ -24,6 +24,15 @@ from typing import Any, Dict, List
 
 # Add Villager to path
 sys.path.append('/home/yenn/Villager-AI')
+sys.path.append('/home/yenn/Villager-AI/src/villager_ai')
+
+# Activate virtual environment if not already activated
+import os
+venv_path = '/home/yenn/Villager-AI/villager-venv-new'
+if venv_path not in sys.path:
+    site_packages = os.path.join(venv_path, 'lib', 'python3.13', 'site-packages')
+    if os.path.exists(site_packages):
+        sys.path.insert(0, site_packages)
 
 # Import Villager visual components for colored logging
 try:

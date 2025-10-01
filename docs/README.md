@@ -19,6 +19,13 @@ Essential guide for AI assistants to understand the hybrid approach.
 - Practical examples and best practices
 - Tool capabilities summary
 
+### 🐳 [Cyberspike Setup Guide](CYBERSPIKE_SETUP.md)
+Cyberspike Docker image integration and fallback configuration.
+- Cyberspike registry access setup
+- Automatic fallback to standard Kali
+- Network and authentication configuration
+- Verification and testing procedures
+
 ### 🔧 [Troubleshooting Guide](TROUBLESHOOTING.md)
 Common issues and solutions for the Villager AI Framework.
 - MCP tool loading order fixes
@@ -33,6 +40,7 @@ Common issues and solutions for the Villager AI Framework.
 |:---:|:---|
 | **First-time setup** | [Setup Guide](SETUP_GUIDE.md) |
 | **AI integration** | [AI Assistant Guide](AI_ASSISTANT_GUIDE.md) |
+| **Cyberspike setup** | [Cyberspike Setup Guide](CYBERSPIKE_SETUP.md) |
 | **Problems/issues** | [Troubleshooting Guide](TROUBLESHOOTING.md) |
 | **General overview** | [Main README](../README.md) |
 
