@@ -1,23 +1,17 @@
-# Cyberspike Integration Setup Guide
+# Kali Container Setup Guide
 
 ## Overview
 
-Villager AI includes integration with Cyberspike's custom Kali Docker image, which provides pre-configured security tools and optimized performance. However, the system includes robust fallback mechanisms to ensure functionality even when Cyberspike registry is inaccessible.
+Villager AI uses Kali Linux Docker containers to provide a secure, isolated environment for security tool execution. The system uses the standard `kalilinux/kali-rolling` image with automatic tool installation and SSH-based command execution.
 
 ## Current Status
 
 ### ✅ What's Working
-- **Standard Kali Image**: Primary method using `kalilinux/kali-rolling`
+- **Standard Kali Image**: Uses `kalilinux/kali-rolling` as the primary image
 - **Tool Installation**: All security tools (nmap, msfvenom, gobuster, etc.) are automatically installed
 - **SSH Access**: Secure SSH-based command execution
 - **24-hour Persistence**: Containers persist for 24 hours with automatic cleanup
 - **Full Functionality**: All Villager features work perfectly with standard Kali
-
-### ⚠️ Cyberspike Registry Status
-The Cyberspike registry (`gitlab.cyberspike.top:5050`) is currently **not accessible** due to:
-- Network restrictions/blocking
-- Private registry access requirements
-- Geographic or authentication limitations
 
 ## Setup Options
 
@@ -28,23 +22,6 @@ The system uses the standard Kali image by default, which provides:
 - Full Villager functionality
 - No additional setup required
 - Reliable and always accessible
-
-### ⚠️ Cyberspike Access (Currently Unavailable)
-The Cyberspike registry is currently blocked/unreachable. If access becomes available in the future:
-
-1. **Network Access**: Ensure your network can reach `gitlab.cyberspike.top:5050`
-2. **Authentication**: Configure Docker authentication if required
-3. **Registry Configuration**: Add registry credentials if needed
-
-#### Docker Login (if authentication is required)
-```bash
-docker login gitlab.cyberspike.top:5050
-```
-
-#### Test Cyberspike Access
-```bash
-docker pull gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main
-```
 
 ## Verification
 
@@ -72,9 +49,9 @@ sshpass -p password ssh -o StrictHostKeyChecking=no -p 22000 root@localhost "who
 
 ### Common Issues
 
-#### 1. Cyberspike Registry Timeout
+#### 1. Docker Image Pull Timeout
 **Error**: `net/http: request canceled while waiting for connection`
-**Solution**: This is expected - the system will automatically use standard Kali image
+**Solution**: Check Docker daemon status and network connectivity
 
 #### 2. SSH Connection Issues
 **Error**: `Connection reset by peer`
@@ -95,28 +72,27 @@ docker logs <container_id>
 # Check Villager logs
 tail -f logs/kali_driver.log
 
-# Test network connectivity
-ping gitlab.cyberspike.top
+# Test Docker connectivity
+docker pull hello-world
 ```
 
 ## For Developers/Contributors
 
-### Adding Cyberspike Support
-If you want to add better Cyberspike support:
+### Customizing Kali Container Setup
+If you want to customize the Kali container setup:
 
-1. **Registry Configuration**: Add authentication handling
-2. **Network Detection**: Implement network connectivity checks
-3. **Fallback Logic**: Ensure robust fallback mechanisms
+1. **Custom Images**: Modify the `ensure_kali_image()` function
+2. **Tool Installation**: Update the container startup script
+3. **SSH Configuration**: Modify SSH settings in container creation
 4. **Documentation**: Update setup guides with specific requirements
 
 ### Testing
 ```bash
-# Test with Cyberspike image
-export FORCE_CYBERSPIKE=true
-./scripts/start_villager_proper.sh
+# Test Kali container functionality
+./scripts/test_villager_setup.sh
 
-# Test with standard image
-export FORCE_STANDARD_KALI=true
+# Test with custom image
+export CUSTOM_KALI_IMAGE=your-custom-image
 ./scripts/start_villager_proper.sh
 ```
 

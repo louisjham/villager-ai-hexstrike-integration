@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive test suite
 - Docker containerization support
 - 24-hour self-destruct container mechanism
-- Cyberspike Docker image integration
+- Kali Linux Docker container integration
 - Real security tools integration (MSFVenom, Nmap, SQLMap, etc.)
 - Uncensored AI model support via Ollama
 - MCP (Model Context Protocol) integration

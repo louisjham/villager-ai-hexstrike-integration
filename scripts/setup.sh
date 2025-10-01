@@ -139,18 +139,9 @@ install_docker() {
 setup_kali_container() {
     print_status "Setting up Kali Linux Docker container (True Villager Architecture)..."
     
-    # Attempt to pull Cyberspike image first, then fallback to standard Kali
-    print_status "Attempting to pull Cyberspike Docker image..."
-    print_status "Image: gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main"
-    
-    if timeout 30 docker pull gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main 2>/dev/null; then
-        print_success "✅ Cyberspike Docker image pulled successfully"
-        print_status "Using Cyberspike's pre-configured image with tools pre-installed"
-    else
-        print_warning "⚠️  Cyberspike image not accessible, using standard Kali image"
-        print_status "Pulling standard Kali Linux base image for persistent containers..."
-        docker pull kalilinux/kali-rolling
-    fi
+    # Pull standard Kali image
+    print_status "Pulling standard Kali Linux image..."
+    docker pull kalilinux/kali-rolling
     
     # Create workspace directory
     print_status "Creating workspace directory..."
@@ -159,7 +150,6 @@ setup_kali_container() {
     print_success "Kali Linux container setup complete (True Villager Architecture)"
     print_status "✅ Persistent SSH containers with 24-hour self-destruct"
     print_status "✅ Tools pre-installed in containers (no on-demand installation)"
-    print_status "✅ Cyberspike image integration with robust fallback"
     print_status "✅ Forensic evasion through ephemeral container lifecycle"
 }
 
@@ -284,11 +274,10 @@ display_final_instructions() {
     echo "   • You may need to log out and back in for Docker group changes"
     echo "   • Configure MCP with cloud LLM (DeepSeek API recommended)"
     echo "   • All services are now running"
-    echo "   • Cyberspike image integration with automatic fallback"
+    echo "   • Kali container integration with security tools"
     echo ""
-    echo "🐳 Cyberspike Integration:"
-    echo "   • Attempts to use Cyberspike Docker image on startup"
-    echo "   • Falls back to standard Kali image if Cyberspike is inaccessible"
+    echo "🐳 Kali Container Integration:"
+    echo "   • Uses standard Kali Linux Docker image"
     echo "   • Containers include pre-installed security tools"
     echo "   • SSH-based command execution with 24-hour persistence"
     echo ""

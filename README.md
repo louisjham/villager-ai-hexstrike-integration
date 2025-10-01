@@ -43,7 +43,7 @@ cd villager-ai-hexstrike-integration
 ./scripts/start_villager_proper.sh
 
 # Test the setup (optional but recommended)
-./scripts/test_cyberspike_setup.sh
+./scripts/test_villager_setup.sh
 ```
 
 **That's it!** Both Villager AI and HexStrike ready for your AI model to use.

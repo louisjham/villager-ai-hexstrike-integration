@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Test Cyberspike Setup Script
-# This script verifies that Villager AI works correctly with both Cyberspike and fallback systems
+# Test Villager Setup Script
+# This script verifies that Villager AI works correctly with Kali containers
 
-echo "🧪 Testing Cyberspike Setup for Villager AI"
-echo "=============================================="
+echo "🧪 Testing Villager Setup for Villager AI"
+echo "=========================================="
 
 # Colors for output
 RED='\033[0;31m'
@@ -58,26 +58,23 @@ if [ "$all_services_ok" = false ]; then
     exit 1
 fi
 
-# Test 2: Test Cyberspike registry connectivity
-echo -e "\n${BLUE}2. Testing Cyberspike Registry Access${NC}"
+# Test 2: Test Docker and Kali image availability
+echo -e "\n${BLUE}2. Testing Docker and Kali Image Access${NC}"
 echo "------------------------------------"
 
-print_status "INFO" "Checking Cyberspike registry access..."
-if timeout 10 ping -c 1 gitlab.cyberspike.top > /dev/null 2>&1; then
-    print_status "OK" "Cyberspike registry is reachable"
-    
-    # Try to pull the image
-    print_status "INFO" "Attempting to pull Cyberspike image..."
-    if timeout 60 docker pull gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main > /dev/null 2>&1; then
-        print_status "OK" "Cyberspike image pulled successfully"
-        cyberspike_available=true
-    else
-        print_status "WARN" "Cyberspike image pull failed (registry blocked - using standard Kali)"
-        cyberspike_available=false
-    fi
+print_status "INFO" "Checking Docker and Kali image availability..."
+if docker images | grep -q "kalilinux/kali-rolling"; then
+    print_status "OK" "Kali Linux image is available locally"
+    kali_available=true
 else
-    print_status "WARN" "Cyberspike registry is blocked/unreachable (using standard Kali - this is normal)"
-    cyberspike_available=false
+    print_status "INFO" "Pulling Kali Linux image..."
+    if timeout 60 docker pull kalilinux/kali-rolling > /dev/null 2>&1; then
+        print_status "OK" "Kali Linux image pulled successfully"
+        kali_available=true
+    else
+        print_status "WARN" "Kali Linux image pull failed"
+        kali_available=false
+    fi
 fi
 
 # Test 3: Test Kali Driver functionality
@@ -126,18 +123,17 @@ fi
 echo -e "\n${BLUE}5. Summary and Recommendations${NC}"
 echo "--------------------------------"
 
-if [ "$cyberspike_available" = true ]; then
-    print_status "OK" "Cyberspike integration is working perfectly!"
-    echo "   - You have access to the Cyberspike registry"
-    echo "   - Custom Kali image with optimized tools is available"
-    echo "   - All Villager AI features are fully functional"
-else
-    print_status "OK" "Standard Kali system is working perfectly!"
-    echo "   - Standard Kali image is being used (primary method)"
+if [ "$kali_available" = true ]; then
+    print_status "OK" "Kali container system is working perfectly!"
+    echo "   - Kali Linux image is available and ready"
     echo "   - All security tools are automatically installed"
     echo "   - All Villager AI features are fully functional"
     echo "   - No additional setup required"
-    echo "   - Cyberspike registry is blocked (this is normal)"
+else
+    print_status "WARN" "Kali image not available - check Docker setup"
+    echo "   - Docker may not be running"
+    echo "   - Network connectivity issues"
+    echo "   - Check Docker daemon status"
 fi
 
 echo -e "\n${GREEN}🎉 Villager AI is ready to use!${NC}"
@@ -148,6 +144,6 @@ echo "2. Check the MCP tools panel for Villager tools"
 echo "3. Start using the hybrid Villager AI + HexStrike setup"
 echo ""
 echo "For detailed setup information, see:"
-echo "- docs/CYBERSPIKE_SETUP.md"
+echo "- docs/KALI_CONTAINER_SETUP.md"
 echo "- docs/AI_ASSISTANT_GUIDE.md"
 echo "- docs/TROUBLESHOOTING.md"

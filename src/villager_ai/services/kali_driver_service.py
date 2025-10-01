@@ -41,81 +41,51 @@ WORKSPACE_DIR = "/tmp/villager_workspace"
 os.makedirs(WORKSPACE_DIR, exist_ok=True)
 
 def ensure_kali_image():
-    """Ensure Kali Linux Docker image is available (with Cyberspike attempt)"""
+    """Ensure Kali Linux Docker image is available"""
     try:
-        # Try Cyberspike image first, but don't block if it fails
-        cyberspike_image = "gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main"
-        fallback_image = "kalilinux/kali-rolling"
+        # Use standard Kali image
+        image_name = "kalilinux/kali-rolling"
         
-        # Check if Cyberspike image exists locally first
-        result = subprocess.run(['docker', 'images', cyberspike_image], 
+        # Check if image exists locally
+        result = subprocess.run(['docker', 'images', image_name], 
                               capture_output=True, text=True)
-        if cyberspike_image in result.stdout:
-            print(f"✅ Cyberspike Kali image already available locally")
-            return cyberspike_image
-        
-        # Try to pull Cyberspike image with timeout
-        print(f"Attempting to pull Cyberspike Kali image...")
-        try:
-            subprocess.run(['docker', 'pull', cyberspike_image], 
-                          check=True, timeout=30)  # Short timeout
-            print("✅ Cyberspike Kali image ready")
-            return cyberspike_image
-        except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
-            print(f"⚠️  Cyberspike image not accessible: {e}")
-            print("🔄 Using standard Kali image instead...")
-        
-        # Use fallback image
-        result = subprocess.run(['docker', 'images', fallback_image], 
-                              capture_output=True, text=True)
-        if fallback_image not in result.stdout:
+        if image_name not in result.stdout:
             print(f"Pulling standard Kali image...")
-            subprocess.run(['docker', 'pull', fallback_image], check=True)
-        print(f"✅ Using standard Kali image: {fallback_image}")
-        return fallback_image
+            subprocess.run(['docker', 'pull', image_name], check=True)
+        print(f"✅ Using standard Kali image: {image_name}")
+        return image_name
         
     except Exception as e:
         print(f"Error ensuring Kali image: {e}")
         return "kalilinux/kali-rolling"  # Final fallback
 
 def create_kali_container() -> Optional[KaliContainer]:
-    """Create a persistent Kali container using Cyberspike's actual image"""
+    """Create a persistent Kali container with security tools"""
     try:
         image_name = ensure_kali_image()
         
         # Generate random SSH port
         ssh_port = 22000 + len(active_containers)
         
-        # Create container using Cyberspike's actual image
-        if "cyberspike.top" in image_name:
-            # Use Cyberspike's pre-configured image (tools already installed)
-            container_cmd = [
-                'docker', 'run', '-d',  # -d for detached (persistent)
-                '-p', f'{ssh_port}:22',  # SSH port mapping
-                '-v', f'{WORKSPACE_DIR}:/workspace',
-                image_name,
-                '/usr/sbin/sshd', '-D'  # Start SSH daemon directly
-            ]
-        else:
-            # Fallback to standard Kali with manual setup
-            container_cmd = [
-                'docker', 'run', '-d',  # -d for detached (persistent)
-                '-p', f'{ssh_port}:22',  # SSH port mapping
-                '-v', f'{WORKSPACE_DIR}:/workspace',
-                image_name,
-                'bash', '-c', '''
-                    # Install SSH server and essential tools
-                    apt update -y > /dev/null 2>&1
-                    DEBIAN_FRONTEND=noninteractive apt install -y openssh-server metasploit-framework nmap > /dev/null 2>&1
-                    # Configure SSH like Cyberspike
-                    mkdir -p /var/run/sshd
-                    echo "root:password" | chpasswd
-                    sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/" /etc/ssh/sshd_config
-                    sed -i "s/#PasswordAuthentication yes/PasswordAuthentication yes/" /etc/ssh/sshd_config
-                    # Start SSH daemon
-                    /usr/sbin/sshd -D
-                '''
-            ]
+        # Create container with standard Kali image and tool setup
+        container_cmd = [
+            'docker', 'run', '-d',  # -d for detached (persistent)
+            '-p', f'{ssh_port}:22',  # SSH port mapping
+            '-v', f'{WORKSPACE_DIR}:/workspace',
+            image_name,
+            'bash', '-c', '''
+                # Install SSH server and essential tools
+                apt update -y > /dev/null 2>&1
+                DEBIAN_FRONTEND=noninteractive apt install -y openssh-server metasploit-framework nmap > /dev/null 2>&1
+                # Configure SSH
+                mkdir -p /var/run/sshd
+                echo "root:password" | chpasswd
+                sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/" /etc/ssh/sshd_config
+                sed -i "s/#PasswordAuthentication yes/PasswordAuthentication yes/" /etc/ssh/sshd_config
+                # Start SSH daemon
+                /usr/sbin/sshd -D
+            '''
+        ]
         
         print(f"Creating persistent Kali container on port {ssh_port}...")
         result = subprocess.run(container_cmd, capture_output=True, text=True)
@@ -166,7 +136,7 @@ def destroy_container(container_id: str):
 def execute_via_ssh(container: KaliContainer, command: str) -> dict:
     """Execute command via SSH (true Villager architecture)"""
     try:
-        # Use actual SSH connection like Cyberspike does
+        # Use SSH connection for command execution
         # Use sshpass for password authentication
         ssh_cmd = [
             'sshpass', '-p', 'password',

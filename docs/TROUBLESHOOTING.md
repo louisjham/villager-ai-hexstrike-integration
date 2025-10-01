@@ -93,39 +93,35 @@ tail -f logs/mcp_client.log
 tail -f logs/kali_driver.log
 ```
 
-### 3. Cyberspike Image Pull Timeouts
+### 3. Docker Image Pull Issues
 
-**Symptoms**: Timeout errors when pulling Cyberspike Docker image
+**Symptoms**: Timeout errors when pulling Docker images
 
 **Common Causes**:
-- Private registry `gitlab.cyberspike.top:5050` may be inaccessible
 - Network connectivity issues or slow connection
 - DNS resolution problems
-- Registry may require authentication
+- Docker daemon issues
 - Geographic restrictions or firewall blocking
 
 **Solutions**:
 ```bash
-# 1. Test registry connectivity
-ping gitlab.cyberspike.top
-nslookup gitlab.cyberspike.top
+# 1. Check Docker daemon status
+sudo systemctl status docker
+sudo systemctl start docker
 
-# 2. Try with longer timeout
-timeout 120 docker pull gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main
+# 2. Test Docker connectivity
+docker pull hello-world
 
-# 3. Check if authentication is required
-curl -I https://gitlab.cyberspike.top:5050
-
-# 4. Use standard Kali image (recommended workaround)
+# 3. Pull standard Kali image
 docker pull kalilinux/kali-rolling
 
-# 5. Configure Docker for better performance
+# 4. Configure Docker for better performance
 sudo systemctl edit docker
 # Add: [Service] ExecStart= ExecStart=/usr/bin/dockerd --max-concurrent-downloads=1
 sudo systemctl restart docker
 ```
 
-**Note**: Villager automatically falls back to `kalilinux/kali-rolling` if Cyberspike image fails. The standard Kali image works perfectly for all security tools.
+**Note**: Villager uses the standard `kalilinux/kali-rolling` image which provides all necessary security tools.
 
 ### 4. Docker Container Issues
 
@@ -147,20 +143,7 @@ docker images
 # Test Docker access
 docker run hello-world
 
-# Check Cyberspike image availability (with longer timeout)
-timeout 120 docker pull gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main
-
-# If timeout occurs, try these solutions:
-# 1. Check DNS resolution
-nslookup gitlab.cyberspike.top
-
-# 2. Test connectivity
-ping gitlab.cyberspike.top
-
-# 3. Check if registry requires authentication
-curl -I https://gitlab.cyberspike.top:5050
-
-# 4. Use standard Kali image instead (recommended)
+# Pull standard Kali image
 docker pull kalilinux/kali-rolling
 ```
 

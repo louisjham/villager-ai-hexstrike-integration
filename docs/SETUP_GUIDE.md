@@ -60,7 +60,7 @@ Add this to your `mcp_servers.json`:
 **Key Points**:
 1. **Villager comes FIRST** - Ensures Cursor loads Villager tools before hitting tool limits
 2. **Replace paths** - Use actual paths to your installations
-3. **Cloud LLM first** - Uses DeepSeek API by default (no local RAM required)
+3. **Cloud LLM** - Uses DeepSeek API by default but has the ability to use other models too 
 
 ## 🔧 Manual Setup
 
@@ -82,7 +82,8 @@ sudo apt install -y kali-linux-everything
 
 # Optional: Install Ollama for local AI models
 # curl -fsSL https://ollama.ai/install.sh | sh
-# ollama pull deepseek-r1-uncensored
+# search on https://huggingface.co/ to find a model of your liking for example:
+# ollama pull (model of choice)
 # ollama serve &
 ```
 
