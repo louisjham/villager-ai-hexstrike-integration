@@ -3,28 +3,32 @@
 # ===============================================
 # 
 # This file contains all the Python dependencies needed to run
-# the Villager AI Framework with the new workflow architecture.
+# the Villager AI Framework with AI-driven cybersecurity automation.
 #
 # Installation:
 #   1. Create virtual environment: python -m venv villager-venv-new
 #   2. Activate environment: source villager-venv-new/bin/activate
 #   3. Install dependencies: pip install -r requirements.txt
-#   4. Run tests: ./tests/run_tests.sh
+#   4. Run setup: ./scripts/setup.sh
+#   5. Start services: ./scripts/start_villager_proper.sh
 #
 # ===============================================
 
 # ===============================================
 # CORE VILLAGER FRAMEWORK
 # ===============================================
-# Villager includes MCP (Model Context Protocol) as a dependency
+# Villager AI Framework with MCP (Model Context Protocol) integration
 villager==0.2.1rc1
+mcp==1.15.0
 
 # ===============================================
-# ADDITIONAL WEB FRAMEWORK & API DEPENDENCIES
+# WEB FRAMEWORK & API DEPENDENCIES
 # ===============================================
-# Note: villager already includes fastapi, uvicorn, pydantic, requests, typer, click
-# These are additional dependencies needed for the full framework
+# FastAPI and related components for Villager services
+fastapi==0.116.1
+uvicorn==0.35.0
 starlette==0.47.3
+pydantic==2.11.7
 pydantic-core==2.33.2
 pydantic-settings==2.11.0
 python-multipart==0.0.20
@@ -32,8 +36,8 @@ python-multipart==0.0.20
 # ===============================================
 # HTTP CLIENT & REQUESTS
 # ===============================================
-# Note: villager already includes requests
-# These are additional HTTP dependencies
+# HTTP clients for Villager services and external API calls
+requests==2.32.4
 requests-toolbelt==1.0.0
 httpx==0.28.1
 httpx-sse==0.4.1
@@ -45,8 +49,11 @@ sniffio==1.3.1
 # ===============================================
 # AI & LLM INTEGRATION
 # ===============================================
-# Note: villager already includes openai, langchain, langchain-core, langchain-openai
-# These are additional AI dependencies
+# AI and LLM dependencies for Villager's intelligent task orchestration
+openai==1.97.0
+langchain==0.3.26
+langchain-core==0.3.69
+langchain-openai==0.3.28
 langchain-text-splitters==0.3.8
 langsmith==0.4.31
 tiktoken==0.11.0
@@ -54,8 +61,9 @@ tiktoken==0.11.0
 # ===============================================
 # CLI & TYPER
 # ===============================================
-# Note: villager already includes typer, click
-# These are additional CLI dependencies
+# CLI dependencies for Villager command-line interface
+typer==0.12.7
+click==8.2.1
 shellingham==1.5.4
 
 # ===============================================
@@ -160,6 +168,32 @@ PyGithub==2.1.1
 # mkdocs-material==9.4.8
 
 # ===============================================
+# VILLAGER FRAMEWORK SPECIFIC
+# ===============================================
+# Dependencies specific to Villager AI Framework functionality
+# These are included in the villager package but listed for clarity
+
+# Task Management & Orchestration
+# - TaskNode for task execution and decomposition
+# - MCP Client for external tool access
+# - Agent Scheduler for LLM orchestration
+# - Tools Manager for function registry
+
+# Security Tools Integration
+# - MSFVenom payload generation
+# - Nmap network scanning
+# - SQLMap vulnerability testing
+# - Hydra password attacks
+# - John the Ripper hash cracking
+# - And 150+ other Kali Linux tools
+
+# Container Management
+# - Docker integration for isolated execution
+# - Kali Linux containers with 24-hour self-destruct
+# - SSH-based command execution
+# - Forensic evasion capabilities
+
+# ===============================================
 # SYSTEM REQUIREMENTS
 # ===============================================
 # 
@@ -170,5 +204,8 @@ PyGithub==2.1.1
 # - Docker (for containerized security tools)
 # - Ollama (for local AI models)
 # - Kali Linux tools (msfvenom, nmap, etc.)
+# - SSH client (for container access)
+#
+# See SYSTEM_REQUIREMENTS.md for detailed setup instructions
 #
 # ===============================================
