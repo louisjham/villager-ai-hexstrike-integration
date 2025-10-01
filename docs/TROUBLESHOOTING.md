@@ -51,6 +51,160 @@ This guide helps you resolve common issues with the Villager AI framework.
 3. **Cloud LLM first** - Uses DeepSeek API by default (no local RAM required)
 4. **Correct paths** - Use actual paths to your installations
 
+##  Docker Permission Denied Errors 
+
+**ERROR MESSAGE**: `permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock`
+
+### Why this might happen 
+
+
+1. **User not in docker group** - The Docker socket (`/var/run/docker.sock`) requires special permissions
+2. **Fresh install** - Default Docker installation doesn't add users to the docker group automatically
+3. **Session not refreshed** - Even after adding to docker group, current shell sessions don't pick up the change
+4. **Different Linux distributions** - Some distros (Debian, Ubuntu, Kali) have stricter default permissions
+
+### Complete Fix (Choose ONE method)
+
+#### Method 1: Add User to Docker Group (RECOMMENDED)
+
+This is the permanent solution that most users should use:
+
+```bash
+# Step 1: Add your user to the docker group
+sudo usermod -aG docker $USER
+
+# Step 2: Apply group changes (choose ONE)
+# Option A: Log out and log back in (most reliable)
+#   - Close all terminals
+#   - Log out of your session
+#   - Log back in
+
+# Option B: Use newgrp (for current terminal only)
+newgrp docker
+
+# Option C: Reboot (guaranteed to work)
+sudo reboot
+
+# Step 3: Verify it worked
+groups  # Should show "docker" in the list
+docker ps  # Should work without sudo
+
+# Step 4: Test with Villager
+./scripts/test_villager_setup.sh
+```
+
+#### Method 2: Quick Temporary Fix (NOT RECOMMENDED FOR PRODUCTION)
+
+If you just want to test quickly (not secure for long-term use):
+
+```bash
+# Make Docker socket accessible (temporary - resets on reboot)
+sudo chmod 666 /var/run/docker.sock
+
+# Test it works
+docker ps
+
+# Run setup
+./scripts/setup.sh
+```
+
+**⚠️ WARNING**: This makes Docker accessible to ALL users on the system. Only use for testing!
+
+#### Method 3: Use sudo (LEAST PREFERRED)
+
+If you can't modify groups, run setup with sudo:
+
+```bash
+# Run setup with sudo
+sudo ./scripts/setup.sh
+
+# Run services with sudo
+sudo ./scripts/start_villager_proper.sh
+```
+
+**⚠️ WARNING**: This can cause permission issues with files created by root.
+
+### Verification Steps
+
+After applying the fix, verify everything works:
+
+```bash
+# 1. Check Docker access (should work WITHOUT sudo)
+docker ps
+docker images
+
+# 2. Check group membership
+groups | grep docker  # Should show "docker"
+id -nG | grep docker  # Alternative check
+
+# 3. Test Docker pull
+docker pull hello-world
+
+# 4. Test Kali image
+docker pull kalilinux/kali-rolling
+
+# 5. Run Villager test script
+./scripts/test_villager_setup.sh
+```
+
+### Still Not Working?
+
+If you've tried the above and it's still not working:
+
+```bash
+# Check Docker daemon status
+sudo systemctl status docker
+sudo systemctl start docker
+
+# Check socket permissions
+ls -l /var/run/docker.sock
+# Should show: srw-rw---- 1 root docker
+
+# Fix socket ownership if needed
+sudo chown root:docker /var/run/docker.sock
+sudo chmod 660 /var/run/docker.sock
+
+# Restart Docker daemon
+sudo systemctl restart docker
+
+# Check Docker service logs
+journalctl -u docker --no-pager | tail -50
+
+# Verify Docker info
+docker info
+```
+
+### Why Some Users Get This Error and Others Don't
+
+1. **Fresh vs Configured Systems**:
+   - Fresh Linux install = Needs docker group setup
+   - Pre-configured systems (some cloud VMs) = Docker group already set up
+
+2. **Installation Method**:
+   - Package manager (apt/yum) = Requires manual group setup
+   - Docker Desktop = Handles permissions automatically
+   - Snap installation = May have different permission model
+
+3. **Distribution Differences**:
+   - **Ubuntu/Debian**: Requires `usermod -aG docker $USER`
+   - **Fedora/RHEL**: Same requirement
+   - **Arch**: Explicitly requires group addition
+   - **Kali Linux**: Default user often needs docker group added
+
+4. **User Account Type**:
+   - **Sudo/Admin users**: Can add themselves to docker group
+   - **Limited users**: May need admin help
+   - **Root user**: No permission issues (but not recommended)
+
+### For Community Project Maintainers
+
+To help users avoid this issue, consider:
+
+1. **Setup Script Enhancement**: Add automatic docker group check/addition to `setup.sh`
+2. **Clear Documentation**: Put Docker permissions at the top of setup guides
+3. **Error Messages**: Detect permission errors and show the fix automatically
+4. **Pre-flight Checks**: Test Docker access before starting installation
+
 ## 🔍 Common Issues and Solutions
 
 ### 1. Villager Tools Not Available in Cursor
