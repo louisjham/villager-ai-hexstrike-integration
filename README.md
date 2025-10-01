@@ -1,78 +1,98 @@
 <div align="center">
-  <img src="VillagerXHexstrike.png" alt="Villager AI Framework" width="600" />
+<img src="VillagerXHexstrike.png" alt="Villager AI Framework" width="600" />
 </div>
 
-# Villager AI Framework
+<h1 align="center">Villager AI Framework</h1>
 
-**AI-Driven Cybersecurity Automation Platform**
+<p align="center">
+<strong>An AI-driven framework for orchestrating and automating cybersecurity operations.</strong>
+<br />
+<br />
+<a href="#-quick-start">Quick Start</a> •
+<a href="#-architecture">Architecture</a> •
+<a href="#-key-features">Features</a> •
+<a href="#-usage-examples">Usage</a> •
+<a href="#-configuration">Configuration</a> •
+<a href="#-documentation">Docs</a>
+</p>
 
-Villager is a powerful AI framework that orchestrates cybersecurity operations through intelligent task decomposition, agent scheduling, and seamless integration with security tools. It implements the true Villager architecture with TaskNode execution, MCP Client integration, and containerized Kali Linux environments.
+<p align="center">
+<img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
+<img src="https://img.shields.io/badge/python-3.9+-informational.svg" alt="Python Version">
+<img src="https://img.shields.io/badge/status-active-success.svg" alt="Status">
+</p>
 
-## 🚀 Quick Start
+Villager is a powerful AI framework that orchestrates cybersecurity operations through intelligent task decomposition, agent scheduling, and seamless integration with security tools. It implements the true Villager architecture with TaskNode execution, MCP Client integration, and containerized Kali Linux environments for secure and robust testing.
 
-```bash
-# Complete setup in one go
+🚀 Quick Start
+
+Get the entire framework up and running with a single script.
+Bash
+
+# Clone the repository and run the setup script
 git clone https://github.com/Yenn503/villager-ai-hexstrike-integration.git
 cd villager-ai-hexstrike-integration
 ./setup.sh
-```
 
-**That's it!** The setup script automatically installs all dependencies and starts all services.
+    That's it! The setup script automatically installs all dependencies, builds the necessary containers, and starts all services.
 
-## 🏗️ Architecture
+🏗️ Architecture
 
-```
+Villager operates on a distributed, service-oriented architecture, ensuring modularity and scalability.
+
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Cursor MCP    │───▶│  Villager MCP    │───▶│ Villager Server │
-│                 │    │  (villager_proper│    │   (port 37695)  │
-│                 │    │   _mcp.py)       │    │                 │
-└─────────────────┘    └──────────────────┘    └─────────┬───────┘
+│ (User Interface)│    │  (villager_proper│    │   (port 37695)  │
+└─────────────────┘    │   _mcp.py)       │    │                 │
+                       └──────────────────┘    └─────────┬───────┘
                                                          │
                                                          ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Kali Driver   │◀───│   MCP Client     │◀───│   TaskNode      │
-│   (port 1611)   │    │   (port 25989)   │    │                 │
+│   (port 1611)   │    │   (port 25989)   │    │  (Execution)    │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
-```
 
-### Service Architecture
-- **Villager MCP Server** - True Villager framework integration with TaskNode execution
-- **Villager Server** (Port 37695) - Task management and orchestration
-- **MCP Client** (Port 25989) - Service communication and streaming responses
-- **Kali Driver** (Port 1611) - Security tools execution (msfvenom, nmap, etc.)
-- **Browser Automation** (Port 8080) - Web automation capabilities
+Core Services
 
-## 🔗 Integration with HexStrike
+    Villager MCP Server: The central brain, integrating the true Villager framework with TaskNode execution.
 
-Villager works **alongside** HexStrike to provide a complete cybersecurity automation ecosystem:
+    Villager Server (Port 37695): Manages and orchestrates high-level tasks and AI agents.
 
-### **Villager's Role: AI Orchestration**
-- **Task Decomposition**: Breaks down complex security operations into manageable tasks
-- **Agent Scheduling**: Coordinates multiple AI agents for different aspects of security testing
-- **Tool Integration**: Manages and orchestrates security tools through MCP protocol
-- **Decision Making**: Uses AI reasoning to determine the best approach for each task
+    MCP Client (Port 25989): Facilitates communication between services and streams responses.
 
-### **HexStrike's Role: Tool Execution**
-- **Security Tools**: Provides 150+ specialized cybersecurity tools
-- **Payload Generation**: Creates custom payloads and exploits
-- **Vulnerability Scanning**: Performs comprehensive security assessments
-- **Report Generation**: Produces detailed security reports
+    Kali Driver (Port 1611): Executes security tools (msfvenom, nmap, etc.) within a secure container.
 
-## 🎯 Key Features
+    Browser Automation (Port 8080): Provides web automation and scraping capabilities.
 
-- **🤖 AI-Driven Operations**: Intelligent task decomposition and agent orchestration
-- **🔧 True Architecture**: Implements proper Villager framework with TaskNode execution
-- **🐳 Containerized Security**: Isolated Kali Linux environments for safe tool execution
-- **🔗 MCP Integration**: Seamless Model Context Protocol integration for tool access
-- **🛡️ Uncensored AI**: Local Ollama integration with unrestricted cybersecurity capabilities
-- **📊 GitHub Integration**: Repository management and tool discovery capabilities
-- **⚡ Real Security Tools**: Access to MSFVenom, Nmap, SQLMap, and thousands of Kali tools
+A Symbiotic Ecosystem: Villager & HexStrike
 
-## 🔧 MCP Integration
+Villager and HexStrike work in tandem, each with a distinct role, to create a comprehensive cybersecurity automation platform.
+Framework	Role & Responsibilities
+🤖 Villager	AI Orchestration & Strategy • Task Decomposition: Breaks down high-level goals into executable steps. • Agent Scheduling: Coordinates AI agents for analysis and decision-making. • Tool Integration: Manages security tools via the MCP protocol. • AI-Driven Logic: Determines the optimal approach for each task.
+🛡️ HexStrike	Tool Execution & Exploitation • Tool Arsenal: Provides 150+ specialized cybersecurity tools. • Payload Generation: Creates custom payloads and exploits. • Vulnerability Scanning: Performs deep security assessments. • Report Generation: Produces detailed findings and reports.
 
-Configure Villager in your MCP client (e.g., Cursor IDE):
+🎯 Key Features
 
-```json
+    AI-Driven Operations: Leverages LLMs for intelligent task decomposition and agent orchestration.
+
+    True Villager Architecture: Implements the proper framework with TaskNode execution for robust performance.
+
+    Containerized Security: Utilizes isolated Kali Linux environments for safe and clean tool execution.
+
+    Seamless MCP Integration: Integrates flawlessly with any Model Context Protocol (MCP) client like Cursor.
+
+    Uncensored Local AI: Natively supports Ollama for unrestricted, private, and powerful cybersecurity reasoning.
+
+    Real Security Tools: Provides programmatic access to thousands of industry-standard Kali tools, including MSFVenom, Nmap, and SQLMap.
+
+⚙️ Connecting with MCP
+
+Integrate Villager into your MCP client (e.g., Cursor IDE) by adding the following to your configuration file (mcp_servers.json).
+
+    Note: Remember to replace /path/to/your/Villager-AI with the absolute path to the project directory.
+
+JSON
+
 {
   "mcpServers": {
     "villager-proper": {
@@ -94,148 +114,156 @@ Configure Villager in your MCP client (e.g., Cursor IDE):
     }
   }
 }
-```
 
-## 🛠️ Available MCP Tools
+🛠️ Core Commands (MCP Tools)
 
-### Task Management
-- `mcp_villager-proper_create_task(abstract, description, verification)` - Create AI-driven tasks
-- `mcp_villager-proper_get_task_status(task_id)` - Monitor task progress
-- `mcp_villager-proper_list_tasks()` - List all active tasks
+Interact with the framework using these MCP functions from your connected client.
 
-### Agent Orchestration
-- `mcp_villager-proper_schedule_agent(agent_name, task_input)` - Schedule AI agents
+Task Management
 
-### Tool Execution
-- `mcp_villager-proper_execute_tool(tool_name, parameters)` - Execute tools:
-  - `pyeval` - Python code execution
-  - `os_execute_cmd` - System command execution
-  - `tool_villager` - Agent-specific functions
-  - `github_tools` - GitHub API integration
+    mcp_villager-proper_create_task(abstract, description, verification): Creates a new high-level task for the AI to decompose and execute.
 
-### System Integration
-- `mcp_villager-proper_get_system_status()` - Get comprehensive system status
-- `mcp_villager-proper_list_available_tools()` - List all available tools
+    mcp_villager-proper_get_task_status(task_id): Monitors the progress and status of a specific task.
 
-## 🎯 Usage Examples
+    mcp_villager-proper_list_tasks(): Lists all currently active tasks.
 
-### Creating a Security Assessment Task
-```python
-# Villager decomposes this into subtasks automatically
+Tool & System Execution
+
+    mcp_villager-proper_execute_tool(tool_name, parameters): Directly executes a specific tool.
+
+        pyeval: Python code execution.
+
+        os_execute_cmd: System command execution within the Kali container.
+
+        github_tools: GitHub API integration.
+
+    mcp_villager-proper_list_available_tools(): Lists all tools registered with the framework.
+
+    mcp_villager-proper_get_system_status(): Retrieves a comprehensive status of all Villager services.
+
+💡 Usage Examples
+
+1. Create a Full Security Assessment Task
+
+Let Villager's AI handle the entire workflow from reconnaissance to reporting.
+Python
+
+# The AI will decompose this abstract goal into multiple sub-tasks (e.g., nmap scan, service enumeration, vulnerability analysis).
 result = mcp_villager-proper_create_task(
-    abstract="Perform comprehensive security assessment",
-    description="Scan target network 192.168.1.0/24 for vulnerabilities, enumerate services, and identify potential attack vectors",
-    verification="Provide detailed report with findings and recommendations"
+    abstract="Perform a comprehensive security assessment on the target network.",
+    description="Scan the 192.168.1.0/24 network for vulnerabilities, enumerate all services, and identify potential attack vectors.",
+    verification="Produce a detailed report outlining findings, risk levels, and mitigation recommendations."
 )
-```
 
-### Scheduling a Security Analyst Agent
-```python
-result = mcp_villager-proper_schedule_agent(
-    agent_name="Security Analyst",
-    task_input="Analyze the network scan results and prioritize vulnerabilities by risk level"
-)
-```
+2. Execute a Specific Security Tool
 
-### Executing Security Tools
-```python
-# Direct tool execution through Villager
+Run a command directly when you know exactly what you need.
+Python
+
+# Execute an Nmap scan for service versions and common scripts.
 result = mcp_villager-proper_execute_tool(
     tool_name="os_execute_cmd",
     parameters={"system_command": "nmap -sV -sC 192.168.1.1"}
 )
-```
 
-## 🚀 Starting the Framework
+🔌 Framework Management
 
-### **One-Command Startup**
-```bash
+Starting the Framework
+
+    One-Command Startup:
+    Bash
+
 ./start_villager_proper.sh
-```
 
-### **Manual Startup**
-```bash
-# Start all services
-cd /path/to/your/Villager-AI
-source villager-venv-new/bin/activate
-./start_villager_proper.sh
-```
+Manual Startup:
+Bash
 
-### **✅ Verification**
-After startup, you should see:
-- ✅ All services running on their respective ports
-- ✅ Villager Server: http://localhost:37695
-- ✅ MCP Client: http://localhost:25989
-- ✅ Kali Driver: http://localhost:1611
-- ✅ Browser Service: http://localhost:8080
+    # Activate the virtual environment
+    source villager-venv-new/bin/activate
+    # Run the startup script
+    ./start_villager_proper.sh
 
-## 🔧 Configuration
+Verification
 
-### Environment Variables
-```bash
-# LLM Configuration (choose one)
-export LLM_PROVIDER="ollama"                    # Local AI (recommended)
+After startup, ensure all services are running correctly:
+
+    ✅ Villager Server: http://localhost:37695
+
+    ✅ MCP Client: http://localhost:25989
+
+    ✅ Kali Driver: http://localhost:1611
+
+    ✅ Browser Service: http://localhost:8080
+
+🔧 Configuration
+
+Configure the framework using environment variables.
+Bash
+
+# LLM Configuration (Ollama is recommended for uncensored, local operation)
+export LLM_PROVIDER="ollama"
 export OLLAMA_BASE_URL="http://localhost:11434"
-export OLLAMA_MODEL="deepseek-r1-uncensored"
+export OLLAMA_MODEL="deepseek-r1-uncensored" # Or another model of your choice
 
-# Alternative: API-based LLM
-export LLM_PROVIDER="deepseek"
-export DEEPSEEK_API_KEY="your-api-key-here"
+# Alternative: API-based LLM (e.g., DeepSeek)
+# export LLM_PROVIDER="deepseek"
+# export DEEPSEEK_API_KEY="your-api-key-here"
 
-# Optional: GitHub Integration
+# Optional: GitHub Integration for repository tools
 export GITHUB_TOKEN="your-github-token-here"
-```
 
-## 🧪 Testing
+🧪 Testing
 
-### Comprehensive Test Suite
-```bash
-# Run all tests
+A comprehensive test suite is included to validate your setup and ensure all components are functional.
+Bash
+
+# Run the entire test suite
 ./tests/run_tests.sh
-```
 
-The test suite verifies:
-- ✅ Environment setup and dependencies
-- ✅ Villager core imports and functionality
-- ✅ MCP server initialization and status
-- ✅ LLM provider connection (Ollama/DeepSeek/OpenAI)
-- ✅ Tool execution (Python, OS commands)
-- ✅ Security tools availability (MSFVenom, Nmap, etc.)
-- ✅ GitHub integration (optional)
-- ✅ Docker availability
+The suite verifies:
 
-## 📚 Documentation
+    Environment setup and dependencies
 
-All documentation is organized in the [`docs/`](docs/) directory:
+    Core Villager imports and functionality
 
-- **[📖 Documentation Index](docs/README.md)** - Complete documentation overview
-- **[🤖 AI Assistant Guide](docs/AI_ASSISTANT_GUIDE.md)** - Complete guide for AI assistants
-- **[🚀 Setup Guide](docs/SETUP_GUIDE.md)** - Detailed setup instructions
-- **[🔧 Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+    MCP server initialization
 
-## 🎯 Cyberspike Integration
+    LLM provider connectivity (Ollama/DeepSeek)
 
-Villager implements the true Cyberspike architecture:
+    Tool execution (Python, OS commands)
 
-- **✅ Cyberspike Docker Image**: `gitlab.cyberspike.top:5050/aszl/diamond-shovel/al-1s/kali-image:main`
-- **✅ 24-Hour Self-Destruct**: Containers automatically destroy after 24 hours
-- **✅ SSH-Based Execution**: Commands executed via SSH in persistent containers
-- **✅ Forensic Evasion**: Ephemeral containers with randomized ports
-- **✅ Pre-installed Tools**: Security tools pre-installed in containers
+    Security tool availability (msfvenom, nmap)
 
-## ⚠️ Disclaimer
+    GitHub integration (if configured)
 
-**This framework is for educational and authorized testing purposes only.**
+    Docker availability and container access
 
-- Users must have proper authorization before testing any network or system
-- The framework provides access to real security tools and should only be used in controlled environments
-- Users are responsible for ensuring compliance with applicable laws and regulations
-- This tool should not be used for malicious purposes or unauthorized access
+📚 Documentation
 
-## 📄 License
+Detailed documentation for setup, usage, and troubleshooting can be found in the docs/ directory.
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+    📖 Main Index: Overview of all documentation.
 
----
+    🤖 AI Assistant Guide: In-depth guide for interacting with the AI.
 
-**Villager AI Framework** - *Intelligent Cybersecurity Automation*
+    🚀 Setup Guide: Step-by-step installation instructions.
+
+    🔧 Troubleshooting: Solutions for common issues.
+
+⚠️ Disclaimer
+
+    For Educational & Authorized Use Only
+
+    This framework provides access to powerful security tools and is intended strictly for educational purposes and authorized security testing.
+
+        Users must have explicit permission from the target system's owner before conducting any security assessment.
+
+        Usage of this framework should be confined to controlled, isolated environments.
+
+        The developers are not responsible for any misuse or damage caused by this tool. Users are solely responsible for their actions and for complying with all applicable laws.
+
+📄 License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+Villager AI Framework — Intelligent Cybersecurity Automation
