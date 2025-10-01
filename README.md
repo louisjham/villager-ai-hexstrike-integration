@@ -23,6 +23,8 @@ By heading over to hexstrikes github repo and following there instructions to se
 
 https://github.com/0x4m4/hexstrike-ai
 
+Here's my blog showing a demonstration of the villager workflow: https://medium.com/@lewisgames1995/power-of-villager-x-hex-strike-f234c4a712cd
+
 **Key Features:**
 - 🤖 **AI Model Control** - Both tools controlled by your AI (Cursor, etc.)
 - ⚡ **Fast Execution** - HexStrike for quick tests and direct tool access
