@@ -19,10 +19,9 @@ echo ""
 
 # HexStrike Integration Notice
 echo "🔗 Hybrid Approach Available:"
-echo "   Villager AI works best with HexStrike AI for comprehensive security testing"
-echo "   HexStrike provides 150+ additional security tools and AI agents"
+echo "   Villager AI works with HexStrike AI for comprehensive security testing, but is not required."
+echo "   HexStrike provides 150+ additional security tools to use for rapid testing its a great complement to Villager AI."
 echo "   Install HexStrike: https://github.com/0x4m4/hexstrike-ai"
-echo "   (Optional - Villager works independently, but hybrid setup is recommended)"
 echo ""
 
 # Colors for output
@@ -281,7 +280,7 @@ display_final_instructions() {
     echo "🔗 Optional - Install HexStrike for Hybrid Approach:"
     echo "   git clone https://github.com/0x4m4/hexstrike-ai.git"
     echo "   cd hexstrike-ai && ./start_hexstrike.sh"
-    echo "   (Adds 150+ additional security tools and AI agents)"
+    echo "   (Adds 150+ additional security tools)"
     echo ""
     echo "⚠️  Important Notes:"
     echo "   • You may need to log out and back in for Docker group changes"
@@ -306,7 +305,7 @@ display_final_instructions() {
 main() {
     echo "Starting complete Villager AI Framework setup..."
     echo ""
-    echo "💡 Tip: For the full hybrid experience, also install HexStrike AI:"
+    echo "💡 Tip: For the full hybrid experience, also install HexStrike MCP:"
     echo "   https://github.com/0x4m4/hexstrike-ai"
     echo ""
     
