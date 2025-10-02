@@ -13,6 +13,11 @@
 
 set -e  # Exit on any error
 
+# Change to the script's directory (Villager-AI root)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+cd "$PROJECT_ROOT"
+
 echo "🏘️ Villager AI Framework - Complete Setup"
 echo "=========================================="
 echo ""
@@ -251,7 +256,7 @@ start_services() {
     source villager-venv-new/bin/activate
     
     # Start services
-    ./start_villager_proper.sh
+    ./scripts/start_villager_proper.sh
     
     print_success "Services started"
 }
