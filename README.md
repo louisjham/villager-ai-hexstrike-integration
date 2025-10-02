@@ -1,6 +1,6 @@
 <div align="center">
 
-#  Villager AI Framework
+#  Villager AI Framework x HexStrike
 
 <img src="VillagerXHexstrike.png" alt="Villager AI Framework" width="600" />
 
