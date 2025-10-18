@@ -26,12 +26,12 @@ https://github.com/0x4m4/hexstrike-ai
 Here's my blog showing a demonstration of the villager workflow: https://medium.com/@lewisgames1995/power-of-villager-x-hex-strike-f234c4a712cd
 
 **Key Features:**
-- 🤖 **AI Model Control** - Both tools controlled by your AI (Cursor, etc.)
-- ⚡ **Fast Execution** - HexStrike for quick tests and direct tool access
-- 🧠 **Advanced Orchestration** - Villager for complex, multi-step operations
-- 🛡️ **150+ Security Tools** - Complete HexStrike arsenal available
-- 🔗 **MCP Integration** - Seamless integration with any MCP-compatible client
-- 🧠 **Uncensored AI** - Local DeepSeek and other models for unrestricted reasoning
+- **AI Model Control** - Both tools are controlled by your AI (Cursor, etc.)
+- **Fast Execution** - HexStrike for quick tests and direct tool access
+- **Advanced Orchestration** - Villager for complex, multi-step operations
+- **150+ Security Tools** - Complete HexStrike arsenal available
+- **MCP Integration** - Seamless integration with any MCP-compatible client
+- **Uncensored AI** - Local DeepSeek and other models for unrestricted reasoning
 
 ---
 
@@ -43,12 +43,12 @@ Here's my blog showing a demonstration of the villager workflow: https://medium.
 
 1. **Hardcoded Proxy with Credentials** (`src/villager/tools/check/checking.py`)
    - Contains: `"https://huancun:ylq123..@home.hc26.org:5422"`
-   - **Risk**: Logs all web traffic through third-party proxy
+   - **Risk**: Logs all web traffic through a third-party proxy
    - **Impact**: All your web requests may be monitored
 
 2. **Third-Party OpenAI Proxy** (`src/villager/tools/ini/iniworker.py`)
    - Contains: `"openai_endpoint": "https://api.aabao.vip/v1"`
-   - **Risk**: Routes AI prompts through unauthorized third-party service
+   - **Risk**: Routes AI prompts through unauthorised third-party service
    - **Impact**: All your AI interactions could be logged/monitored
 
 3. **External Messaging Webhooks** (`src/villager/tools/dingtalk/sender.py`)
@@ -110,7 +110,7 @@ cd villager-ai-hexstrike-integration
 ./scripts/test_villager_setup.sh
 ```
 
-**That's it!** Both Villager AI and HexStrike ready for your AI model to use.
+**That's it!** Both Villager AI and HexStrike are ready for your AI model to use.
 
 ---
 
