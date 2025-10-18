@@ -64,10 +64,17 @@ except ImportError as e:
 
 # Test Villager imports
 echo "🏘️ Testing Villager imports:"
+
+# Get project root dynamically
+SCRIPT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="\$SCRIPT_DIR"
+
 python -c "
 import sys
-sys.path.append('/home/yenn/Villager-AI')
-sys.path.append('/home/yenn/Villager-AI/src/villager_ai')
+import os
+project_root = os.path.abspath('.')
+sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, 'src', 'villager_ai'))
 
 print('Testing Villager core imports...')
 try:
@@ -99,14 +106,27 @@ print('Villager availability test complete!')
 
 # Test MCP server startup
 echo "🚀 Testing MCP server startup:"
-export PYTHONPATH="/home/yenn/Villager-AI"
-export LLM_PROVIDER="deepseek"
-export DEEPSEEK_API_KEY="sk-bbc4ae4d58604f13845fd74ea7e28566"
+
+# Get project root dynamically
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$SCRIPT_DIR"
+
+export VILLAGER_ROOT="$PROJECT_ROOT"
+export PYTHONPATH="$PROJECT_ROOT"
+export LLM_PROVIDER="${LLM_PROVIDER:-ollama}"
+
+# Security: Never hardcode API keys
+if [ -z "$DEEPSEEK_API_KEY" ] && [ "$LLM_PROVIDER" = "deepseek" ]; then
+    echo "⚠️  WARNING: DEEPSEEK_API_KEY not set. Using test mode."
+    echo "   For production: export DEEPSEEK_API_KEY='your-key-here'"
+    export DEEPSEEK_API_KEY="test-mode-placeholder"
+fi
 
 echo "Environment variables set:"
+echo "  VILLAGER_ROOT: $VILLAGER_ROOT"
 echo "  PYTHONPATH: $PYTHONPATH"
 echo "  LLM_PROVIDER: $LLM_PROVIDER"
-echo "  DEEPSEEK_API_KEY: [SET]"
+echo "  DEEPSEEK_API_KEY: [$([ -n "$DEEPSEEK_API_KEY" ] && echo "SET" || echo "NOT SET")]"
 
 echo "Starting MCP server test (5 second timeout)..."
 timeout 5 python src/villager_ai/mcp/villager_proper_mcp.py --debug 2>&1 | head -20
@@ -116,13 +136,13 @@ echo "🎯 MCP Configuration for Cursor:"
 echo "================================"
 echo "Add this to your mcp_servers.json:"
 echo ""
-cat << 'EOF'
+cat << EOF
 {
   "mcpServers": {
     "villager-proper": {
-      "command": "/home/yenn/Villager-AI/villager-venv-new/bin/python3",
+      "command": "$PROJECT_ROOT/villager-venv-new/bin/python3",
       "args": [
-        "/home/yenn/Villager-AI/src/villager_ai/mcp/villager_proper_mcp.py",
+        "$PROJECT_ROOT/src/villager_ai/mcp/villager_proper_mcp.py",
         "--debug"
       ],
       "description": "Villager AI Framework - AI-Driven Cybersecurity Automation",
@@ -130,9 +150,11 @@ cat << 'EOF'
       "alwaysAllow": [],
       "env": {
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": "/home/yenn/Villager-AI",
-        "LLM_PROVIDER": "deepseek",
-        "DEEPSEEK_API_KEY": "your-api-key-here"
+        "VILLAGER_ROOT": "$PROJECT_ROOT",
+        "PYTHONPATH": "$PROJECT_ROOT",
+        "LLM_PROVIDER": "ollama",
+        "DEEPSEEK_API_KEY": "your-api-key-here-if-using-deepseek",
+        "OPENAI_API_KEY": "your-api-key-here-if-using-openai"
       }
     }
   }

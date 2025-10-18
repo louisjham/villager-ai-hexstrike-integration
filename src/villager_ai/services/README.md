@@ -56,7 +56,8 @@ This directory contains all the core services that make up the Villager AI frame
 
 ### Automatic Startup
 ```bash
-cd /home/yenn/Villager-AI
+# Navigate to your Villager-AI installation directory
+cd /path/to/Villager-AI
 ./start_villager_proper.sh
 ```
 

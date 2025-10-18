@@ -16,7 +16,7 @@ LLM_PROVIDER = os.getenv('LLM_PROVIDER', 'ollama')  # Options: 'agent-zero', 'de
 AGENT_ZERO_URL = os.getenv('AGENT_ZERO_URL', 'http://localhost:50001')
 
 # DeepSeek AI Configuration (Alternative)
-DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', 'sk-bbc4ae4d58604f13845fd74ea7e28566')
+DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', '')
 DEEPSEEK_BASE_URL = os.getenv('DEEPSEEK_BASE_URL', 'https://api.deepseek.com/v1')
 
 # OpenAI Configuration (Alternative)
@@ -135,8 +135,10 @@ class Master:
         }
 
 # Security validation
-if DEEPSEEK_API_KEY == "":
-    print("⚠️  WARNING: DEEPSEEK_API_KEY not set.")
+if LLM_PROVIDER == 'deepseek' and not DEEPSEEK_API_KEY:
+    raise ValueError("❌ DEEPSEEK_API_KEY must be set when using 'deepseek' provider. Set it via environment variable.")
+if LLM_PROVIDER == 'openai' and not OPENAI_API_KEY:
+    raise ValueError("❌ OPENAI_API_KEY must be set when using 'openai' provider. Set it via environment variable.")
 
 # MCP Configuration (required by Villager)
 class MCP:

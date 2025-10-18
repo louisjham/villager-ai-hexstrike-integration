@@ -22,17 +22,24 @@ import json
 import traceback
 from typing import Any, Dict, List
 
-# Add Villager to path
-sys.path.append('/home/yenn/Villager-AI')
-sys.path.append('/home/yenn/Villager-AI/src/villager_ai')
+# Add Villager to path - use environment variable or relative path
+import os
+from pathlib import Path
+
+# Get project root from environment or calculate from current file
+VILLAGER_ROOT = os.getenv('VILLAGER_ROOT', str(Path(__file__).parent.parent.parent.parent))
+sys.path.append(VILLAGER_ROOT)
+sys.path.append(str(Path(VILLAGER_ROOT) / 'src' / 'villager_ai'))
 
 # Activate virtual environment if not already activated
-import os
-venv_path = '/home/yenn/Villager-AI/villager-venv-new'
+venv_path = os.getenv('VILLAGER_VENV', str(Path(VILLAGER_ROOT) / 'villager-venv-new'))
 if venv_path not in sys.path:
-    site_packages = os.path.join(venv_path, 'lib', 'python3.13', 'site-packages')
-    if os.path.exists(site_packages):
-        sys.path.insert(0, site_packages)
+    # Try to find site-packages for the virtual environment
+    for python_version in ['python3.13', 'python3.12', 'python3.11', 'python3.10']:
+        site_packages = os.path.join(venv_path, 'lib', python_version, 'site-packages')
+        if os.path.exists(site_packages):
+            sys.path.insert(0, site_packages)
+            break
 
 # Import Villager visual components for colored logging
 try:

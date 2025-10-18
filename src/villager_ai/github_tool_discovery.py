@@ -28,9 +28,10 @@ class GitHubToolDiscovery:
         
         auth = Auth.Token(self.token)
         self.g = Github(auth=auth)
-        
-        # Tool installation directory
-        self.tools_dir = Path("/home/yenn/Villager-AI/tools")
+
+        # Tool installation directory - use environment variable or relative path
+        villager_root = os.getenv('VILLAGER_ROOT', str(Path(__file__).parent.parent.parent))
+        self.tools_dir = Path(villager_root) / "tools"
         self.tools_dir.mkdir(exist_ok=True)
         
         # Supported tool types and their installation patterns

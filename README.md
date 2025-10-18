@@ -35,6 +35,66 @@ Here's my blog showing a demonstration of the villager workflow: https://medium.
 
 ---
 
+## ⚠️ SECURITY WARNING - Upstream Villager Package
+
+**IMPORTANT**: This repository is a **cleaned and secure integration** of the Villager AI framework. However, if you install the **original upstream Villager package** from PyPI or other sources, be aware of the following security risks identified by security researchers:
+
+### 🚨 Known Security Risks in Upstream Villager (NOT in this repo):
+
+1. **Hardcoded Proxy with Credentials** (`src/villager/tools/check/checking.py`)
+   - Contains: `"https://huancun:ylq123..@home.hc26.org:5422"`
+   - **Risk**: Logs all web traffic through third-party proxy
+   - **Impact**: All your web requests may be monitored
+
+2. **Third-Party OpenAI Proxy** (`src/villager/tools/ini/iniworker.py`)
+   - Contains: `"openai_endpoint": "https://api.aabao.vip/v1"`
+   - **Risk**: Routes AI prompts through unauthorized third-party service
+   - **Impact**: All your AI interactions could be logged/monitored
+
+3. **External Messaging Webhooks** (`src/villager/tools/dingtalk/sender.py`)
+   - Contains: DingTalk (Chinese messaging platform) webhook sender
+   - **Risk**: Can send data/notifications to external messaging services
+   - **Impact**: Potential data exfiltration
+
+### ✅ This Repository is CLEAN
+
+**We have verified**: These risky endpoints are **NOT present** in this repository. We have:
+- ✅ Removed all hardcoded API keys
+- ✅ Fixed all hardcoded file paths to be portable
+- ✅ Made all paths use environment variables and relative paths
+- ✅ Verified NO malicious callbacks or proxies exist in our code
+- ✅ Implemented proper security validation
+
+### 🛡️ Security Best Practices
+
+If you choose to install the original Villager package:
+1. **Audit the code** - Check for the endpoints mentioned above
+2. **Use a virtual environment** - Isolate from your main system
+3. **Monitor network traffic** - Watch for suspicious connections
+4. **Use firewall rules** - Block unauthorized external connections
+5. **Consider using this repo instead** - We've already done the security cleanup
+
+### 📝 Changes Made for Security
+
+**Files Fixed in This Repo**:
+- `src/villager_ai/config.py` - Removed hardcoded API key, added validation
+- `src/villager_ai/github_tool_discovery.py` - Made all file paths portable
+- `src/villager_ai/mcp/villager_proper_mcp.py` - Made all file paths portable
+- `test_mcp_setup.sh` - Fixed file paths and removed hardcoded credentials
+- `src/villager_ai/services/README.md` - Updated documentation with portable paths
+
+**Environment Variables Now Used**:
+```bash
+export VILLAGER_ROOT=/path/to/your/Villager-AI
+export PYTHONPATH=$VILLAGER_ROOT
+export DEEPSEEK_API_KEY=your-key-here  # Set your own, never hardcoded
+export LLM_PROVIDER=ollama  # or deepseek, openai, etc.
+```
+
+For questions about security, please open an issue on GitHub.
+
+---
+
 ## 🚀 Quick Setup
 
 ```bash
