@@ -67,31 +67,13 @@ Here's my blog showing a demonstration of the villager workflow: https://medium.
 
 ### 🛡️ Security Best Practices
 
-If you choose to install the original Villager package:
+when you install the original Villager package:
 1. **Audit the code** - Check for the endpoints mentioned above
 2. **Use a virtual environment** - Isolate from your main system
 3. **Monitor network traffic** - Watch for suspicious connections
 4. **Use firewall rules** - Block unauthorized external connections
-5. **Consider using this repo instead** - We've already done the security cleanup
 
-### 📝 Changes Made for Security
-
-**Files Fixed in This Repo**:
-- `src/villager_ai/config.py` - Removed hardcoded API key, added validation
-- `src/villager_ai/github_tool_discovery.py` - Made all file paths portable
-- `src/villager_ai/mcp/villager_proper_mcp.py` - Made all file paths portable
-- `test_mcp_setup.sh` - Fixed file paths and removed hardcoded credentials
-- `src/villager_ai/services/README.md` - Updated documentation with portable paths
-
-**Environment Variables Now Used**:
-```bash
-export VILLAGER_ROOT=/path/to/your/Villager-AI
-export PYTHONPATH=$VILLAGER_ROOT
-export DEEPSEEK_API_KEY=your-key-here  # Set your own, never hardcoded
-export LLM_PROVIDER=ollama  # or deepseek, openai, etc.
-```
-
-For questions about security, please open an issue on GitHub.
+For questions about security, please open an issue on GitHub. or refer to the repo that found these hidden endpoints https://github.com/gregcmartin/villager
 
 ---
 
