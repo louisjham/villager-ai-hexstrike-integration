@@ -11,9 +11,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 def test_kali_driver_service_import():
     """Test that we can import the kali_driver_service"""
     try:
-        from villager_ai.services.kali_driver_service import KaliContainer, ensure_kali_image
-        assert KaliContainer is not None
-        assert ensure_kali_image is not None
+        from villager_ai.services.kali_driver_service import execute_local, app
+        assert execute_local is not None
+        assert app is not None
     except ImportError as e:
         pytest.skip(f"Could not import kali_driver_service: {e}")
 
@@ -41,23 +41,18 @@ def test_villager_server_import():
     except ImportError as e:
         pytest.skip(f"Could not import villager_server_simple: {e}")
 
-def test_kali_container_class():
-    """Test KaliContainer class basic functionality"""
+def test_execute_local():
+    """Test local command execution"""
     try:
-        from villager_ai.services.kali_driver_service import KaliContainer
-        import time
+        from villager_ai.services.kali_driver_service import execute_local
         
-        # Test container creation
-        container = KaliContainer("test_id", 22000)
-        assert container.container_id == "test_id"
-        assert container.ssh_port == 22000
-        assert container.created_at > 0
-        
-        # Test expiration check (should not be expired immediately)
-        assert not container.is_expired()
+        # Test a simple echo command
+        result = execute_local("echo hello")
+        assert result["success"] is True
+        assert "hello" in result["stdout"]
         
     except ImportError as e:
-        pytest.skip(f"Could not import KaliContainer: {e}")
+        pytest.skip(f"Could not import execute_local: {e}")
 
 if __name__ == "__main__":
     pytest.main([__file__])

@@ -108,111 +108,43 @@ install_system_packages() {
         python3 \
         python3-dev \
         python3-pip \
-        python3-venv \
         software-properties-common \
-        apt-transport-https \
-        ca-certificates \
-        gnupg \
-        lsb-release
+        ca-certificates
     
     print_success "System packages installed"
 }
 
-# Function to install Docker
-install_docker() {
-    if command_exists docker; then
-        print_success "Docker is already installed"
-        return 0
-    fi
+# Function to install security tools (optional, for Kali-like functionality)
+install_security_tools() {
+    print_status "Installing security tools (optional)..."
     
-    print_status "Installing Docker..."
+    # These are the tools that were previously inside the Docker container.
+    # Install whichever are available in your WSL distro's repos.
+    sudo apt install -y \
+        nmap \
+        sqlmap \
+        hydra \
+        john \
+        nikto \
+        2>/dev/null || print_warning "Some security tools could not be installed from default repos."
     
-    # Add Docker's official GPG key
-    sudo mkdir -p /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    
-    # Set up the repository
-    echo \
-        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    
-    # Install Docker Engine
-    sudo apt update
-    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    
-    # Add user to docker group
-    sudo usermod -aG docker $USER
-    
-    print_success "Docker installed successfully"
-    print_warning "You need to log out and back in for Docker group changes to take effect"
+    print_success "Security tools installed (where available)"
+    print_status "For msfvenom / Metasploit, install manually or add the Kali repo."
 }
 
-# Function to setup Kali Docker container (True Villager Architecture)
-setup_kali_container() {
-    print_status "Setting up Kali Linux Docker container (True Villager Architecture)..."
-    
-    # Pull standard Kali image
-    print_status "Pulling standard Kali Linux image..."
-    docker pull kalilinux/kali-rolling
-    
-    # Create workspace directory
-    print_status "Creating workspace directory..."
-    mkdir -p /tmp/villager_workspace
-    
-    print_success "Kali Linux container setup complete (True Villager Architecture)"
-    print_status "✅ Persistent SSH containers with 24-hour self-destruct"
-    print_status "✅ Tools pre-installed in containers (no on-demand installation)"
-    print_status "✅ Forensic evasion through ephemeral container lifecycle"
-}
 
-# Function to install Ollama
-install_ollama() {
-    if command_exists ollama; then
-        print_success "Ollama is already installed"
-        return 0
-    fi
-    
-    print_status "Installing Ollama..."
-    
-    # Install Ollama
-    curl -fsSL https://ollama.ai/install.sh | sh
-    
-    # Start Ollama service
-    print_status "Starting Ollama service..."
-    ollama serve &
-    OLLAMA_PID=$!
-    
-    # Wait for Ollama to start
-    sleep 5
-    
-    # Pull the AI model
-    print_status "Downloading AI model (this may take a few minutes)..."
-    ollama pull deepseek-r1-uncensored
-    
-    print_success "Ollama installed and configured"
-}
 
 # Function to setup Python environment
 setup_python_environment() {
     print_status "Setting up Python environment..."
     
-    # Create virtual environment
-    if [ ! -d "villager-venv-new" ]; then
-        print_status "Creating virtual environment..."
-        python3 -m venv villager-venv-new
-    fi
-    
-    # Activate virtual environment
-    print_status "Activating virtual environment..."
-    source villager-venv-new/bin/activate
-    
     # Upgrade pip
     print_status "Upgrading pip..."
-    pip install --upgrade pip
+    pip3 install --upgrade pip --user
     
     # Install Python dependencies
     print_status "Installing Python dependencies..."
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt --user
     
     print_success "Python environment setup complete"
 }
@@ -229,8 +161,9 @@ configure_environment() {
         print_success "Environment file already exists"
     fi
     
-    # Create logs directory
+    # Create logs and workspace directories
     mkdir -p logs
+    mkdir -p /tmp/villager_workspace
     
     print_success "Environment configured"
 }
@@ -238,9 +171,6 @@ configure_environment() {
 # Function to run tests
 run_tests() {
     print_status "Running tests to verify installation..."
-    
-    # Activate virtual environment
-    source villager-venv-new/bin/activate
     
     # Run tests
     ./tests/run_tests.sh
@@ -251,9 +181,6 @@ run_tests() {
 # Function to start services
 start_services() {
     print_status "Starting Villager services..."
-    
-    # Activate virtual environment
-    source villager-venv-new/bin/activate
     
     # Start services
     ./scripts/start_villager_proper.sh
@@ -288,21 +215,14 @@ display_final_instructions() {
     echo "   (Adds 150+ additional security tools)"
     echo ""
     echo "⚠️  Important Notes:"
-    echo "   • You may need to log out and back in for Docker group changes"
-    echo "   • Configure MCP with cloud LLM (DeepSeek API recommended)"
+    echo "   • Configure MCP with Z.AI Coding Plan API key"
     echo "   • All services are now running"
-    echo "   • Kali container integration with security tools"
-    echo ""
-    echo "🐳 Kali Container Integration:"
-    echo "   • Uses standard Kali Linux Docker image"
-    echo "   • Containers include pre-installed security tools"
-    echo "   • SSH-based command execution with 24-hour persistence"
+    echo "   • Running in native WSL mode — no Docker required"
     echo ""
     echo "🔧 Troubleshooting:"
     echo "   • Check logs: tail -f logs/*.log"
     echo "   • Restart services: ./start_villager_proper.sh"
     echo "   • Run tests: ./tests/run_tests.sh"
-    echo "   • Docker issues: sudo systemctl status docker"
     echo ""
 }
 
@@ -321,9 +241,7 @@ main() {
     
     # Installation steps
     install_system_packages
-    install_docker
-    setup_kali_container
-    # install_ollama  # Commented out - use cloud LLM instead (no RAM required)
+    install_security_tools
     setup_python_environment
     configure_environment
     

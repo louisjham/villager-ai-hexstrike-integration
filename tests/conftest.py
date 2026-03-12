@@ -16,25 +16,6 @@ def test_environment():
     return os.environ
 
 @pytest.fixture
-def mock_docker():
-    """Mock Docker for testing"""
-    # This would be used to mock Docker calls in tests
-    # For now, just return a simple mock
-    class MockDocker:
-        def images(self, image_name):
-            class MockResult:
-                stdout = f"kalilinux/kali-rolling"
-                returncode = 0
-            return MockResult()
-        
-        def pull(self, image_name):
-            class MockResult:
-                returncode = 0
-            return MockResult()
-    
-    return MockDocker()
-
-@pytest.fixture
 def mock_subprocess():
     """Mock subprocess for testing"""
     import subprocess

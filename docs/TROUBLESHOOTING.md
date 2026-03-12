@@ -14,7 +14,7 @@ This guide helps you resolve common issues with the Villager AI framework.
 {
   "mcpServers": {
     "villager-proper": {
-      "command": "/path/to/your/Villager-AI/villager-venv-new/bin/python3",
+      "command": "/usr/bin/python3",
       "args": [
         "/path/to/your/Villager-AI/src/villager_ai/mcp/villager_proper_mcp.py",
         "--debug"
@@ -330,19 +330,15 @@ ollama serve &
 
 **Solutions**:
 ```bash
-# Check virtual environment
-source villager-venv-new/bin/activate
-which python
-
 # Check PYTHONPATH
 export PYTHONPATH="/path/to/your/Villager-AI"
 echo $PYTHONPATH
 
 # Reinstall dependencies
-pip install -r requirements.txt
+pip3 install -r requirements.txt --user
 
 # Test imports
-python -c "from scheduler.core.init import global_llm; print('✅ Villager imports working')"
+python3 -c "from scheduler.core.init import global_llm; print('✅ Villager imports working')"
 ```
 
 ## 🔧 Debug Commands
@@ -485,8 +481,7 @@ export DEEPSEEK_API_KEY="your-actual-api-key-here"
 
 # Test MCP server directly
 cd /path/to/Villager-AI
-source villager-venv-new/bin/activate
-python src/villager_ai/mcp/villager_proper_mcp.py --debug
+python3 src/villager_ai/mcp/villager_proper_mcp.py --debug
 ```
 
 **Step 3: Correct MCP Configuration**
@@ -494,7 +489,7 @@ python src/villager_ai/mcp/villager_proper_mcp.py --debug
 {
   "mcpServers": {
     "villager-proper": {
-      "command": "/path/to/your/Villager-AI/villager-venv-new/bin/python3",
+      "command": "/usr/bin/python3",
       "args": [
         "/path/to/your/Villager-AI/src/villager_ai/mcp/villager_proper_mcp.py",
         "--debug"
@@ -545,24 +540,21 @@ groups | grep docker
 ls -la | grep villager_proper_mcp.py
 # Should show the MCP server file
 
-# Check virtual environment exists
-ls -la villager-venv-new/bin/activate
-# Should show the activate script
+# Check MCP server file exists
+ls -la | grep villager_proper_mcp.py
+# Should show the MCP server file
 ```
 
 **Check 3: Dependencies**
 ```bash
-# Activate virtual environment
-source villager-venv-new/bin/activate
-
 # Test critical imports
-python -c "
+python3 -c "
 import typer, click, mcp, fastapi
 print('✅ Core dependencies working')
 "
 
 # Test Villager imports
-python -c "
+python3 -c "
 import sys
 sys.path.append('.')
 from scheduler.core.init import global_llm
@@ -687,8 +679,7 @@ docker rm $(docker ps -aq) 2>/dev/null
 sudo systemctl restart docker
 
 # Reinstall dependencies
-source villager-venv-new/bin/activate
-pip install -r requirements.txt
+pip3 install -r requirements.txt --user
 
 # Restart everything
 ./scripts/start_villager_proper.sh

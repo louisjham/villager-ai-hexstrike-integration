@@ -6,7 +6,7 @@
 echo "🏘️ Villager MCP Setup Test"
 echo "=========================="
 
-# Check if we're in the right directory
+# Check if we're in the right direc
 if [ ! -f "src/villager_ai/mcp/villager_proper_mcp.py" ]; then
     echo "❌ Error: Please run this script from the Villager-AI directory"
     exit 1
@@ -18,21 +18,9 @@ echo "✅ Running from correct directory"
 echo "🐍 Python version:"
 python3 --version
 
-# Check virtual environment
-echo "🔧 Virtual environment:"
-if [ -f "villager-venv-new/bin/activate" ]; then
-    echo "✅ Virtual environment found"
-    source villager-venv-new/bin/activate
-    echo "✅ Virtual environment activated"
-    echo "   Python path: $(which python)"
-else
-    echo "❌ Virtual environment not found"
-    exit 1
-fi
-
 # Check dependencies
 echo "📦 Checking dependencies:"
-python -c "
+python3 -c "
 import sys
 print(f'Python version: {sys.version}')
 
@@ -69,7 +57,7 @@ echo "🏘️ Testing Villager imports:"
 SCRIPT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="\$SCRIPT_DIR"
 
-python -c "
+python3 -c "
 import sys
 import os
 project_root = os.path.abspath('.')
@@ -113,20 +101,20 @@ PROJECT_ROOT="$SCRIPT_DIR"
 
 export VILLAGER_ROOT="$PROJECT_ROOT"
 export PYTHONPATH="$PROJECT_ROOT"
-export LLM_PROVIDER="${LLM_PROVIDER:-ollama}"
+export LLM_PROVIDER="${LLM_PROVIDER:-zai}"
 
 # Security: Never hardcode API keys
-if [ -z "$DEEPSEEK_API_KEY" ] && [ "$LLM_PROVIDER" = "deepseek" ]; then
-    echo "⚠️  WARNING: DEEPSEEK_API_KEY not set. Using test mode."
-    echo "   For production: export DEEPSEEK_API_KEY='your-key-here'"
-    export DEEPSEEK_API_KEY="test-mode-placeholder"
+if [ -z "$ZAI_API_KEY" ] && [ "$LLM_PROVIDER" = "zai" ]; then
+    echo "⚠️  WARNING: ZAI_API_KEY not set. Using test mode."
+    echo "   For production: export ZAI_API_KEY='your-key-here'"
+    export ZAI_API_KEY="test-mode-placeholder"
 fi
 
 echo "Environment variables set:"
 echo "  VILLAGER_ROOT: $VILLAGER_ROOT"
 echo "  PYTHONPATH: $PYTHONPATH"
 echo "  LLM_PROVIDER: $LLM_PROVIDER"
-echo "  DEEPSEEK_API_KEY: [$([ -n "$DEEPSEEK_API_KEY" ] && echo "SET" || echo "NOT SET")]"
+echo "  ZAI_API_KEY: [$([ -n "$ZAI_API_KEY" ] && echo "SET" || echo "NOT SET")]"
 
 echo "Starting MCP server test (5 second timeout)..."
 timeout 5 python src/villager_ai/mcp/villager_proper_mcp.py --debug 2>&1 | head -20
@@ -140,7 +128,7 @@ cat << EOF
 {
   "mcpServers": {
     "villager-proper": {
-      "command": "$PROJECT_ROOT/villager-venv-new/bin/python3",
+      "command": "/usr/bin/python3",
       "args": [
         "$PROJECT_ROOT/src/villager_ai/mcp/villager_proper_mcp.py",
         "--debug"
@@ -152,9 +140,9 @@ cat << EOF
         "PYTHONUNBUFFERED": "1",
         "VILLAGER_ROOT": "$PROJECT_ROOT",
         "PYTHONPATH": "$PROJECT_ROOT",
-        "LLM_PROVIDER": "ollama",
-        "DEEPSEEK_API_KEY": "your-api-key-here-if-using-deepseek",
-        "OPENAI_API_KEY": "your-api-key-here-if-using-openai"
+        "LLM_PROVIDER": "zai",
+        "ZAI_API_KEY": "your-zai-api-key-here",
+        "OPENROUTER_API_KEY": "your-openrouter-api-key-here"
       }
     }
   }
@@ -164,4 +152,4 @@ EOF
 echo ""
 echo "✅ Setup test complete!"
 echo "If you see 'Villager Available: True' above, the MCP server is working correctly."
-echo "Make sure to replace 'your-api-key-here' with your actual DeepSeek API key."
+echo "Make sure to replace the API key placeholders with your actual Z.AI and OpenRouter API keys."

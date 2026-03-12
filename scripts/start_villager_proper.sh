@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Proper Villager Framework Startup Script
+# Proper Villager Framework Startup Script (Native WSL)
 
 # Import visual components
 source src/villager_ai/villager_visuals.py 2>/dev/null || python3 -c "
@@ -11,31 +11,8 @@ print(create_integrated_banner())
 print(create_startup_message())
 "
 
-# Check if virtual environment exists
-if [ ! -d "villager-venv-new" ]; then
-    echo "❌ Virtual environment not found. Please run setup first."
-    exit 1
-fi
-
-# Check Docker availability
-if ! command -v docker &> /dev/null; then
-    echo "❌ Docker is not installed or not in PATH."
-    echo "   Please install Docker to use Villager's containerized execution."
-    exit 1
-fi
-
-# Check if Docker daemon is running
-if ! docker info &> /dev/null; then
-    echo "❌ Docker daemon is not running."
-    echo "   Please start Docker daemon to use Villager's containerized execution."
-    exit 1
-fi
-
-echo "✅ Docker is available and running"
-
-# Activate virtual environment
-echo "🔧 Activating Villager virtual environment..."
-source villager-venv-new/bin/activate
+# Virtual environment check removed - using system Python3
+echo "🔧 Using system Python3 for Villager..."
 
 # Load environment variables
 if [ -f ".env" ]; then
@@ -54,39 +31,49 @@ fi
 
 # Check LLM provider configuration
 if [ -z "$LLM_PROVIDER" ]; then
-    export LLM_PROVIDER="ollama"
-    echo "🔧 Using default LLM provider: Ollama (local, uncensored)"
+    export LLM_PROVIDER="zai"
+    echo "🔧 Using default LLM provider: Z.AI Coding Plan"
 fi
 
-# Configure Ollama (default)
-if [ "$LLM_PROVIDER" = "ollama" ]; then
-    export OLLAMA_BASE_URL="${OLLAMA_BASE_URL:-http://localhost:11434}"
-    export OLLAMA_MODEL="${OLLAMA_MODEL:-deepseek-r1-uncensored}"
-    echo "✅ Ollama configuration:"
-    echo "   - Base URL: $OLLAMA_BASE_URL"
-    echo "   - Model: $OLLAMA_MODEL"
-elif [ "$LLM_PROVIDER" = "deepseek" ]; then
-    if [ -z "$DEEPSEEK_API_KEY" ]; then
-        echo "⚠️  WARNING: DEEPSEEK_API_KEY not set for DeepSeek provider."
-        echo "   Please set your DeepSeek API key:"
-        echo "   export DEEPSEEK_API_KEY='your-key-here'"
+# Configure provider
+if [ "$LLM_PROVIDER" = "zai" ]; then
+    export ZAI_BASE_URL="${ZAI_BASE_URL:-https://api.z.ai/api/coding/paas/v4}"
+    export ZAI_MODEL="${ZAI_MODEL:-glm-4.7}"
+    if [ -z "$ZAI_API_KEY" ]; then
+        echo "⚠️  WARNING: ZAI_API_KEY not set."
+        echo "   Get your key at: https://z.ai/manage-apikey/apikey-list"
         echo ""
     else
-        export OPENAI_API_KEY="$DEEPSEEK_API_KEY"
-        echo "✅ DeepSeek API key configured"
+        echo "✅ Z.AI Coding Plan configured:"
+        echo "   - Endpoint: $ZAI_BASE_URL"
+        echo "   - Model: $ZAI_MODEL"
+    fi
+elif [ "$LLM_PROVIDER" = "openrouter" ]; then
+    export OPENROUTER_BASE_URL="${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}"
+    export OPENROUTER_MODEL="${OPENROUTER_MODEL:-zhipu/glm-5}"
+    if [ -z "$OPENROUTER_API_KEY" ]; then
+        echo "⚠️  WARNING: OPENROUTER_API_KEY not set."
+        echo "   Get your key at: https://openrouter.ai/keys"
+        echo ""
+    else
+        echo "✅ OpenRouter configured:"
+        echo "   - Endpoint: $OPENROUTER_BASE_URL"
+        echo "   - Model: $OPENROUTER_MODEL"
     fi
 fi
+
 
 # Start Villager using its true interface
 echo "🚀 Starting Villager with proper architecture..."
 echo "   - TaskNode for task execution and decomposition"
 echo "   - MCP Client (Port 25989) for external tool access"
-echo "   - Kali Driver (Port 1611) for containerized execution with security tools"
+echo "   - Kali Driver (Port 1611) for native local execution"
 echo "   - Agent Scheduler for LLM orchestration"
 echo "   - Tools Manager for function registry"
-echo "   - Kali Linux Docker image with security tools"
-echo "   - Persistent containers with 24-hour self-destruct"
 echo ""
+
+# Create logs directory
+mkdir -p logs
 
 # Function to check if port is in use
 check_port() {
@@ -101,7 +88,7 @@ check_port() {
 # Start MCP Client service if not running
 if ! check_port 25989; then
     echo "🔧 Starting MCP Client service on port 25989..."
-    python src/villager_ai/services/mcp_service.py > logs/mcp_client.log 2>&1 &
+    python3 src/villager_ai/services/mcp_service.py > logs/mcp_client.log 2>&1 &
     MCP_CLIENT_PID=$!
     echo "📊 MCP Client started with PID: $MCP_CLIENT_PID"
     
@@ -123,7 +110,7 @@ fi
 # Start Kali Driver service if not running
 if ! check_port 1611; then
     echo "🔧 Starting Kali Driver service on port 1611..."
-    python src/villager_ai/services/kali_driver_service.py > logs/kali_driver.log 2>&1 &
+    python3 src/villager_ai/services/kali_driver_service.py > logs/kali_driver.log 2>&1 &
     KALI_DRIVER_PID=$!
     echo "📊 Kali Driver started with PID: $KALI_DRIVER_PID"
     
@@ -145,7 +132,7 @@ fi
 # Start Browser Automation service if not running
 if ! check_port 8080; then
     echo "🔧 Starting Browser Automation service on port 8080..."
-    python src/villager_ai/services/browser_service.py > logs/browser_automation.log 2>&1 &
+    python3 src/villager_ai/services/browser_service.py > logs/browser_automation.log 2>&1 &
     BROWSER_PID=$!
     echo "📊 Browser Automation started with PID: $BROWSER_PID"
     
@@ -175,7 +162,7 @@ echo ""
 if ! check_port 37695; then
     echo "🔧 Starting Villager server on port 37695..."
     # Use the simplified server that actually works
-    python src/villager_ai/services/villager_server_simple.py > logs/villager_server.log 2>&1 &
+    python3 src/villager_ai/services/villager_server_simple.py > logs/villager_server.log 2>&1 &
     VILLAGER_SERVER_PID=$!
     echo "📊 Villager server started with PID: $VILLAGER_SERVER_PID"
     
@@ -210,11 +197,8 @@ echo ""
 echo "✅ Villager framework is fully operational!"
 echo "🎯 You can now use Villager MCP tools in Cursor to create tasks and execute them."
 echo ""
-echo "🐳 Kali Container Integration:"
-echo "   - Uses standard Kali Linux Docker image: kalilinux/kali-rolling"
-echo "   - Containers include pre-installed security tools (msfvenom, nmap, etc.)"
-echo "   - SSH-based command execution with 24-hour container persistence"
+echo "🐧 Running in native WSL mode — commands execute directly on the local system."
 echo ""
 echo "🔧 Troubleshooting:"
-echo "   - If containers fail to create, check Docker daemon status"
-echo "   - Standard Kali image provides all necessary security tools"
+echo "   - Check logs: tail -f logs/*.log"
+echo "   - Restart services: ./scripts/start_villager_proper.sh"

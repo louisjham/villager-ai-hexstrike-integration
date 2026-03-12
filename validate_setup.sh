@@ -32,37 +32,29 @@ echo "🐍 Checking Python version..."
 python3 --version | grep -q "Python 3\.[8-9]\|Python 3\.1[0-9]"
 check_status $? "Python 3.8+ installed"
 
-# Check 2: Docker installation
-echo "🐳 Checking Docker..."
-docker --version > /dev/null 2>&1
-check_status $? "Docker installed"
+# Check 2: Security tools (optional, informational)
+echo "🔧 Checking security tools..."
+tools_found=0
+for tool in nmap sqlmap hydra nikto john; do
+    if command -v "$tool" > /dev/null 2>&1; then
+        tools_found=$((tools_found + 1))
+    fi
+done
+if [ $tools_found -gt 0 ]; then
+    echo -e "${GREEN}✅ $tools_found security tools available${NC}"
+    ((PASSED++))
+else
+    echo -e "${YELLOW}⚠️  No security tools found (optional — install with apt)${NC}"
+fi
 
-# Check 3: Docker daemon running
-echo "🔧 Checking Docker daemon..."
-docker ps > /dev/null 2>&1
-check_status $? "Docker daemon running"
+# Check 3: Dependencies
+echo "🔍 Checking dependencies..."
+python3 -c "import typer, click, mcp, fastapi" > /dev/null 2>&1
+check_status $? "Core dependencies installed"
 
-# Check 4: User in docker group
-echo "👤 Checking Docker permissions..."
-groups | grep -q docker
-check_status $? "User in docker group"
-
-# Check 5: Virtual environment
-echo "📦 Checking virtual environment..."
-if [ -f "villager-venv-new/bin/activate" ]; then
-    check_status 0 "Virtual environment exists"
-    
-    # Activate and test
-    source villager-venv-new/bin/activate
-    
-    # Check 6: Dependencies
-    echo "🔍 Checking dependencies..."
-    python -c "import typer, click, mcp, fastapi" > /dev/null 2>&1
-    check_status $? "Core dependencies installed"
-    
-    # Check 7: Villager imports
-    echo "🏘️ Checking Villager imports..."
-    python -c "
+# Check 4: Villager imports
+echo "🏘️ Checking Villager imports..."
+python3 -c "
 import sys
 sys.path.append('.')
 sys.path.append('src/villager_ai')
@@ -70,22 +62,18 @@ from scheduler.core.init import global_llm
 from scheduler.core.mcp_client.mcp_client import McpClient
 from config import MCP, Master
 " > /dev/null 2>&1
-    check_status $? "Villager modules importable"
-    
-    # Check 8: MCP server startup
-    echo "🚀 Testing MCP server startup..."
-    export PYTHONPATH="$(pwd)"
-    export LLM_PROVIDER="deepseek"
-    export DEEPSEEK_API_KEY="test-key"
-    
-    timeout 5 python src/villager_ai/mcp/villager_proper_mcp.py --debug 2>&1 | grep -q "Villager Available: True"
-    check_status $? "MCP server starts correctly"
-    
-else
-    check_status 1 "Virtual environment exists"
-fi
+check_status $? "Villager modules importable"
 
-# Check 9: Services (optional - only check if running)
+# Check 5: MCP server startup
+echo "🚀 Testing MCP server startup..."
+export PYTHONPATH="$(pwd)"
+export LLM_PROVIDER="zai"
+export ZAI_API_KEY="test-key"
+
+timeout 5 python3 src/villager_ai/mcp/villager_proper_mcp.py --debug 2>&1 | grep -q "Villager Available: True"
+check_status $? "MCP server starts correctly"
+
+# Check 7: Services (optional - only check if running)
 echo "🌐 Checking services (optional)..."
 curl -s http://localhost:37695/health > /dev/null 2>&1
 villager_server=$?
@@ -131,27 +119,9 @@ else
         echo "   Install Python 3.8+ from python.org or your package manager"
     fi
     
-    if ! docker --version > /dev/null 2>&1; then
-        echo "🔧 Fix Docker installation:"
-        echo "   curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh"
-    fi
-    
-    if ! docker ps > /dev/null 2>&1; then
-        echo "🔧 Fix Docker daemon:"
-        echo "   sudo systemctl start docker"
-    fi
-    
-    if ! groups | grep -q docker; then
-        echo "🔧 Fix Docker permissions:"
-        echo "   sudo usermod -aG docker \$USER"
-        echo "   # Then log out and back in"
-    fi
-    
-    if [ ! -f "villager-venv-new/bin/activate" ]; then
-        echo "🔧 Fix virtual environment:"
-        echo "   python3 -m venv villager-venv-new"
-        echo "   source villager-venv-new/bin/activate"
-        echo "   pip install -r requirements.txt"
+    if ! python3 -c "import typer, click, mcp, fastapi" > /dev/null 2>&1; then
+        echo "🔧 Fix Python dependencies:"
+        echo "   pip3 install -r requirements.txt --user"
     fi
     
     echo ""
@@ -167,7 +137,7 @@ cat << 'EOF'
 {
   "mcpServers": {
     "villager-proper": {
-      "command": "/path/to/your/Villager-AI/villager-venv-new/bin/python3",
+      "command": "/usr/bin/python3",
       "args": [
         "/path/to/your/Villager-AI/src/villager_ai/mcp/villager_proper_mcp.py",
         "--debug"
@@ -178,8 +148,9 @@ cat << 'EOF'
       "env": {
         "PYTHONUNBUFFERED": "1",
         "PYTHONPATH": "/path/to/your/Villager-AI",
-        "LLM_PROVIDER": "deepseek",
-        "DEEPSEEK_API_KEY": "your-actual-api-key-here"
+        "LLM_PROVIDER": "zai",
+        "ZAI_API_KEY": "your-zai-api-key-here",
+        "OPENROUTER_API_KEY": "your-openrouter-api-key-here"
       }
     }
   }

@@ -6,11 +6,9 @@
 # the Villager AI Framework with AI-driven cybersecurity automation.
 #
 # Installation:
-#   1. Create virtual environment: python -m venv villager-venv-new
-#   2. Activate environment: source villager-venv-new/bin/activate
-#   3. Install dependencies: pip install -r requirements.txt
-#   4. Run setup: ./scripts/setup.sh
-#   5. Start services: ./scripts/start_villager_proper.sh
+#   1. Install dependencies: pip3 install -r requirements.txt --user
+#   2. Run setup: ./scripts/setup.sh
+#   3. Start services: ./scripts/start_villager_proper.sh
 #
 # ===============================================
 

@@ -87,7 +87,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-villager-venv-new/
 
 # Spyder project settings
 .spyderproject

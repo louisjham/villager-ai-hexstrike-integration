@@ -7,15 +7,13 @@
 sudo apt update && sudo apt upgrade -y && \
 curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh && \
 sudo usermod -aG docker $USER && \
-sudo apt install -y kali-linux-everything python3-dev python3-pip python3-venv build-essential && \
+sudo apt install -y kali-linux-everything python3-dev python3-pip build-essential && \
 curl -fsSL https://ollama.ai/install.sh | sh && \
 ollama pull deepseek-r1-uncensored && \
 ollama serve & && \
 git clone https://github.com/YOUR_USERNAME/villager-ai.git && \
 cd villager-ai && \
-python3 -m venv villager-venv-new && \
-source villager-venv-new/bin/activate && \
-pip install -r requirements.txt && \
+pip3 install -r requirements.txt --user && \
 cp .env.example .env && \
 ./scripts/setup.sh && \
 ./scripts/start_villager_proper.sh && \
@@ -49,7 +47,7 @@ ollama pull deepseek-r1-uncensored
 ollama serve &
 
 # Python dependencies
-sudo apt install -y python3-dev python3-pip python3-venv build-essential
+sudo apt install -y python3-dev python3-pip build-essential
 ```
 
 ## Manual Setup
@@ -58,8 +56,7 @@ If the quick setup fails:
 
 1. **Install system dependencies** (Docker, Kali tools, Ollama)
 2. **Clone repository**: `git clone https://github.com/YOUR_USERNAME/villager-ai.git`
-3. **Setup Python**: `python3 -m venv villager-venv-new && source villager-venv-new/bin/activate`
-4. **Install dependencies**: `pip install -r requirements.txt`
+3. **Setup Python**: `pip3 install -r requirements.txt --user`
 5. **Configure**: `cp .env.example .env`
 6. **Start services**: `./scripts/start_villager_proper.sh`
 7. **Test**: `./tests/run_tests.sh`

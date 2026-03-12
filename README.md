@@ -69,9 +69,8 @@ Here's my blog showing a demonstration of the villager workflow: https://medium.
 
 when you install the original Villager package:
 1. **Audit the code** - Check for the endpoints mentioned above
-2. **Use a virtual environment** - Isolate from your main system
-3. **Monitor network traffic** - Watch for suspicious connections
-4. **Use firewall rules** - Block unauthorized external connections
+2. **Monitor network traffic** - Watch for suspicious connections
+3. **Use firewall rules** - Block unauthorized external connections
 
 For questions about security, please open an issue on GitHub. or refer to the repo that found these hidden endpoints https://github.com/gregcmartin/villager
 

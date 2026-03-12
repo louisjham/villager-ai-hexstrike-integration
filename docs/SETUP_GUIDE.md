@@ -26,7 +26,7 @@ Add this to your `mcp_servers.json`:
 {
   "mcpServers": {
     "villager-proper": {
-      "command": "/path/to/your/Villager-AI/villager-venv-new/bin/python3",
+      "command": "/usr/bin/python3",
       "args": [
         "/path/to/your/Villager-AI/src/villager_ai/mcp/villager_proper_mcp.py",
         "--debug"
@@ -89,12 +89,8 @@ sudo apt install -y kali-linux-everything
 
 ### Step 2: Python Setup
 ```bash
-# Create virtual environment
-python3 -m venv villager-venv-new
-source villager-venv-new/bin/activate
-
 # Install dependencies
-pip install -r requirements.txt
+pip3 install -r requirements.txt --user
 
 # Configure environment
 cp .env.example .env

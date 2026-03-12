@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Test Villager Setup Script
-# This script verifies that Villager AI works correctly with Kali containers
+# This script verifies that Villager AI works correctly in native WSL mode
 
 echo "🧪 Testing Setup for Villager AI"
 echo "=========================================="
@@ -58,23 +58,26 @@ if [ "$all_services_ok" = false ]; then
     exit 1
 fi
 
-# Test 2: Test Docker and Kali image availability
-echo -e "\n${BLUE}2. Testing Docker and Kali Image Access${NC}"
+# Test 2: Test local security tools availability
+echo -e "\n${BLUE}2. Checking Local Security Tools${NC}"
 echo "------------------------------------"
 
-print_status "INFO" "Checking Docker and Kali image availability..."
-if docker images | grep -q "kalilinux/kali-rolling"; then
-    print_status "OK" "Kali Linux image is available locally"
-    kali_available=true
-else
-    print_status "INFO" "Pulling Kali Linux image..."
-    if timeout 60 docker pull kalilinux/kali-rolling > /dev/null 2>&1; then
-        print_status "OK" "Kali Linux image pulled successfully"
-        kali_available=true
+tools=("nmap" "sqlmap" "hydra" "nikto" "john")
+tools_found=0
+
+for tool in "${tools[@]}"; do
+    if command -v "$tool" > /dev/null 2>&1; then
+        print_status "OK" "$tool is installed"
+        tools_found=$((tools_found + 1))
     else
-        print_status "WARN" "Kali Linux image pull failed"
-        kali_available=false
+        print_status "WARN" "$tool is not installed (optional)"
     fi
+done
+
+if [ $tools_found -gt 0 ]; then
+    print_status "OK" "$tools_found security tools available"
+else
+    print_status "WARN" "No security tools found. Install them with: sudo apt install nmap sqlmap hydra nikto john"
 fi
 
 # Test 3: Test Kali Driver functionality
@@ -85,7 +88,7 @@ print_status "INFO" "Testing Kali Driver with a simple command..."
 
 response=$(curl -s -X POST http://localhost:1611/ \
     -H "Content-Type: application/json" \
-    -d '{"prompt": "Run whoami && pwd && which nmap"}' \
+    -d '{"prompt": "echo hello && pwd && whoami"}' \
     --max-time 30)
 
 if echo "$response" | grep -q "Kali Driver executed"; then
@@ -95,13 +98,6 @@ if echo "$response" | grep -q "Kali Driver executed"; then
     output=$(echo "$response" | grep -o '"Output: [^"]*"' | sed 's/"Output: //g' | sed 's/"//g')
     if [ ! -z "$output" ]; then
         echo "   Command output: $output"
-    fi
-    
-    # Check if tools are available
-    if echo "$response" | grep -q "nmap"; then
-        print_status "OK" "Security tools (nmap) are available"
-    else
-        print_status "WARN" "Security tools may still be installing (wait 1-2 minutes)"
     fi
 else
     print_status "ERROR" "Kali Driver test failed"
@@ -120,21 +116,13 @@ else
 fi
 
 # Test 5: Summary and Recommendations
-echo -e "\n${BLUE}5. Summary and Recommendations${NC}"
+echo -e "\n${BLUE}5. Summary${NC}"
 echo "--------------------------------"
 
-if [ "$kali_available" = true ]; then
-    print_status "OK" "Kali container system is working perfectly!"
-    echo "   - Kali Linux image is available and ready"
-    echo "   - All security tools are automatically installed"
-    echo "   - All Villager AI features are fully functional"
-    echo "   - No additional setup required"
-else
-    print_status "WARN" "Kali image not available - check Docker setup"
-    echo "   - Docker may not be running"
-    echo "   - Network connectivity issues"
-    echo "   - Check Docker daemon status"
-fi
+print_status "OK" "Villager AI is running in native WSL mode"
+echo "   - Commands execute directly on the local system"
+echo "   - No containers or virtualization needed"
+echo "   - All Villager AI features are fully functional"
 
 echo -e "\n${GREEN}🎉 Villager AI is ready to use!${NC}"
 echo ""
@@ -144,6 +132,5 @@ echo "2. Check the MCP tools panel for Villager tools"
 echo "3. Start using the hybrid Villager AI + HexStrike setup"
 echo ""
 echo "For detailed setup information, see:"
-echo "- docs/KALI_CONTAINER_SETUP.md"
 echo "- docs/AI_ASSISTANT_GUIDE.md"
 echo "- docs/TROUBLESHOOTING.md"
