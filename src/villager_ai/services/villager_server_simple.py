@@ -46,12 +46,12 @@ async def create_task(abstract: str, description: str, verification: str = "Task
         try:
             # Simulate task execution by calling the MCP client
             mcp_response = requests.post(
-                "http://localhost:25989/",
+                "http://127.0.0.1:25989/",
                 json={
                     "prompt": f"Execute task: {abstract}. Description: {description}",
                     "mcp_servers": {
-                        "kali_driver": "http://localhost:1611",
-                        "browser_use": "http://localhost:8080"
+                        "kali_driver": "http://127.0.0.1:1611",
+                        "browser_use": "http://127.0.0.1:8080"
                     }
                 },
                 timeout=60

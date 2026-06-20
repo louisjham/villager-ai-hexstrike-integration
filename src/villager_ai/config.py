@@ -17,7 +17,7 @@ SERVER_UUID = str(uuid.uuid4())
 LLM_PROVIDER = os.getenv('LLM_PROVIDER', 'zai')  # Options: 'zai', 'openrouter'
 
 # Z.AI Coding Plan Configuration (Primary)
-ZAI_API_KEY = os.getenv('ZAI_API_KEY', '')
+ZAI_API_KEY = os.getenv('ZAI_API_KEY') or os.getenv('ZHIPUAI_API_KEY') or os.getenv('OPENAI_API_KEY') or ''
 ZAI_BASE_URL = os.getenv('ZAI_BASE_URL', 'https://api.z.ai/api/coding/paas/v4')
 ZAI_MODEL = os.getenv('ZAI_MODEL', 'glm-4.7')
 
@@ -147,6 +147,7 @@ class MCP:
         self.server = {
             'base_url':   'http://localhost:25989',
             'browser_use': 'http://localhost:8080',
+            'kali_driver': 'http://localhost:1611',
             'timeout':    30,
             # External MCP servers Villager's LLM can call into
             'mcp_servers': {

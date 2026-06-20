@@ -22,6 +22,30 @@ Key improvements over original:
   ✅ Config import no longer raises ValueError at module load
 """
 
+#!/usr/bin/env python3
+"""
+Villager MCP Server — Hexclaw Integration Build
+
+Architecture:
+    Hexclaw / Cursor
+        └─► MCP stdio  (this file)
+                ├─► VillagerProperMCP.create_mission()   ← Hexclaw fire-and-forget
+                ├─► VillagerProperMCP.create_task()      ← granular tasks
+                └─► Background thread → asyncio loop
+                        └─► _execute_task_with_villager()
+                                ├─► Villager TaskNode + LLM  (when available)
+                                │       └─► McpClient → HexStrike, Kali Driver, Browser
+                                └─► HTTP fallback              (when Villager not installed)
+
+Key improvements over original:
+  ✅ TaskNode path wired — LLM actually reasons and calls tools
+  ✅ SQLite persistence via task_store.py
+  ✅ Webhook callbacks for Hexclaw fire-and-forget
+  ✅ create_mission() — high-level Hexclaw entry point
+  ✅ HexStrike tool context injected into every task description
+  ✅ Config import no longer raises ValueError at module load
+"""
+
 import argparse
 import asyncio
 import json
@@ -34,8 +58,22 @@ import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-# ── Path setup ────────────────────────────────────────────────────────────────
+# ── Load .env file BEFORE any other imports ───────────────────────────────────────────
+from dotenv import load_dotenv
 VILLAGER_ROOT = os.getenv("VILLAGER_ROOT", str(Path(__file__).parent.parent.parent.parent))
+
+# Load .env from multiple possible locations
+_env_paths = [
+    Path(VILLAGER_ROOT) / ".env",  # villager/.env
+    Path(VILLAGER_ROOT).parent / ".env",  # hexstrike-ai/.env (parent of villager)
+]
+for _env_path in _env_paths:
+    if _env_path.exists():
+        load_dotenv(_env_path)
+        print(f"✅ Loaded environment from: {_env_path}", file=sys.stderr)
+        break
+else:
+    print("⚠️ No .env file found, using system environment variables", file=sys.stderr)
 
 _src = str(Path(VILLAGER_ROOT) / "src")
 _vaai = str(Path(_src) / "villager_ai")
@@ -98,7 +136,53 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # HexStrike endpoint exposed to the task LLM
-HEXSTRIKE_MCP_URL = os.getenv("HEXSTRIKE_MCP_URL", "http://localhost:8000")
+HEXSTRIKE_MCP_URL = os.getenv("HEXSTRIKE_MCP_URL", "http://127.0.0.1:8888")
+
+# HexClaw inference bridge — Villager uses this when its own LLM stack is unavailable
+HEXCLAW_INFERENCE_URL = os.getenv("HEXCLAW_INFERENCE_URL", "http://127.0.0.1:9998/inference")
+
+# Consolidated task DB — default to HexClaw's data/ directory
+_HEXCLAW_DATA = os.path.normpath(os.path.join(VILLAGER_ROOT, "..", "..", "data"))
+if not os.environ.get("VILLAGER_DB") and os.path.isdir(_HEXCLAW_DATA):
+    os.environ.setdefault("VILLAGER_WORKSPACE", _HEXCLAW_DATA)
+    os.environ.setdefault("VILLAGER_DB", os.path.join(_HEXCLAW_DATA, "villager_tasks.db"))
+    logger.info("Villager task store → %s", os.environ["VILLAGER_DB"])
+
+
+# ── Monkey-patching scheduler for Windows encoding (UTF-8 fix) ────────────────
+if VILLAGER_AVAILABLE and os.name == 'nt':
+    try:
+        from scheduler.core.schemas.structure.task_relation_manager import (
+            TaskRelationManager, Direction, escape_mermaid_label
+        )
+        
+        def patched_draw_graph(self, output_file: str = "graph.mermaid"):
+            """Patched version to force UTF-8 for Mermaid output on Windows"""
+            content = 'graph TD\n'
+            for task_id in self.task_registry:
+                task_label = self._get_task_from_id(task_id)
+                safe_label = escape_mermaid_label(task_label)
+                content += f'    n{task_id}["{safe_label}"]\n'
+            for task_id in self.task_registry:
+                relations = self.relationships.get(task_id, {})
+                if not relations:
+                    continue
+                right_id = relations.get(Direction.RIGHT)
+                if right_id is not None:
+                    content += f'    n{task_id} --> n{right_id}\n'
+                down_id = relations.get(Direction.DOWN)
+                if down_id is not None:
+                    content += f'    n{task_id} --> n{down_id}\n'
+            # The Fix: specifying encoding='utf-8'
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(content)
+                
+        # Apply the patch
+        TaskRelationManager.draw_graph = patched_draw_graph
+        logger.info("✅ Applied UTF-8 monkey-patch to TaskRelationManager (Windows fix)")
+    except Exception as e:
+        # We use print here because logger might not be ready in some edge cases
+        print(f"⚠️ Failed to apply UTF-8 monkey-patch: {e}", file=sys.stderr)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -140,7 +224,7 @@ class VillagerProperMCP:
     """Proper Villager MCP integration using true TaskNode architecture."""
 
     def __init__(self):
-        self.mcp_client_base_url = "http://localhost:25989" if VILLAGER_AVAILABLE else None
+        self.mcp_client_base_url = "http://127.0.0.1:25989" if VILLAGER_AVAILABLE else None
         self.tools_manager = ToolsManager() if VILLAGER_AVAILABLE else None
 
         # Init persistent store
@@ -261,7 +345,9 @@ class VillagerProperMCP:
                             mcp_client=mcp_client,
                             graph_name=f"./{task_id}.mermaid",
                         )
-                        result_str = str(task_node.execute())
+                        # Wrap synchronous execute() in a thread to avoid blocking the event loop
+                        import asyncio
+                        result_str = await asyncio.to_thread(lambda: str(task_node.execute()))
 
                 _upsert(task_id, status="completed", result=result_str)
                 if VISUALS_AVAILABLE:
@@ -300,11 +386,11 @@ HexStrike MCP ({HEXSTRIKE_MCP_URL}) — 150+ security tools:
   Post-Exp : metasploit modules, mimikatz, empire
   OSINT    : theHarvester, maltego, recon-ng
 
-Kali Driver (http://localhost:1611) — direct WSL shell execution:
+Kali Driver (http://127.0.0.1:1611) — direct WSL shell execution:
   Use for: any CLI security tool, custom scripts, file operations
   Endpoint: POST / with {{"prompt": "<shell command>"}}
 
-Browser Service (http://localhost:8080) — web automation:
+Browser Service (http://127.0.0.1:8080) — web automation:
   Use for: OSINT, web recon, form interaction, screenshot capture
   Endpoint: POST / with {{"prompt": "<browser instruction>"}}
 
@@ -313,18 +399,57 @@ Browser Service (http://localhost:8080) — web automation:
         return description + ctx
 
     async def _http_fallback(self, abstract: str, description: str) -> str:
-        """Keyword-routed HTTP execution when Villager LLM is unavailable."""
-        import requests
+        """
+        Fallback execution when Villager's LLM framework is not installed.
 
+        Priority:
+          1. HexClaw inference bridge (real LLM reasoning via HexClaw's stack)
+          2. Direct HTTP keyword routing (Kali Driver / Browser Service)
+        """
+        import httpx
+
+        # ── 1. HexClaw inference bridge ───────────────────────────────────────
+        if HEXCLAW_INFERENCE_URL:
+            system = (
+                "You are HexClaw, an autonomous red-team security agent. "
+                "Analyse the task, reason step by step, then provide a concise "
+                "technical result or action plan. Be specific and actionable."
+            )
+            prompt = (
+                f"Task: {abstract}\n\n"
+                f"Details: {description}\n\n"
+                f"Available tools: HexStrike MCP at {HEXSTRIKE_MCP_URL}, "
+                "Kali Driver at http://127.0.0.1:1611, Browser at http://127.0.0.1:8080.\n"
+                "Provide your analysis and recommended actions."
+            )
+            try:
+                async with httpx.AsyncClient(timeout=60) as client:
+                    resp = await client.post(
+                        HEXCLAW_INFERENCE_URL,
+                        json={"prompt": prompt, "complexity": "med", "system": system},
+                    )
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        if data.get("text"):
+                            logger.info(
+                                "Task %s completed via HexClaw inference bridge",
+                                abstract[:40],
+                            )
+                            return data["text"]
+            except Exception as exc:
+                logger.warning("HexClaw inference bridge unreachable: %s — falling back to HTTP routing", exc)
+
+        # ── 2. Direct keyword-routed HTTP (last resort) ───────────────────────
         combined = (abstract + " " + description).lower()
         url = (
-            "http://localhost:8080/"
+            "http://127.0.0.1:8080/"
             if any(k in combined for k in ("browser", "web", "scrape", "osint", "screenshot"))
-            else "http://localhost:1611/"
+            else "http://127.0.0.1:1611/"
         )
         prompt = f"Execute: {abstract}. {description}"
         try:
-            resp = requests.post(url, json={"prompt": prompt}, timeout=90)
+            import requests as _requests
+            resp = _requests.post(url, json={"prompt": prompt}, timeout=90)
             if resp.status_code == 200:
                 return resp.json().get("content", f"Task '{abstract}' executed (no Villager)")
             return f"Service error HTTP {resp.status_code}"
